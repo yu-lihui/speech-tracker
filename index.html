@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="nav-menu">
+            <button id="nav-tracker" class="nav-btn active">Therapy Tracker</button>
+            <button id="nav-dashboard" class="nav-btn">Client Progress</button>
+        </div>
+
+        <div id="tracker-view">
+            <div class="session-info">
+                <input type="text" id="client-name" placeholder="Client Name">
+                <div class="target-group">
+                    <input type="text" id="speech-sound" placeholder="Target Sound (e.g., /s/)">
+                    <select id="speech-level">
+                        <option value="Sound">Sound</option>
+                        <option value="Word">Word</option>
+                        <option value="Phrase">Phrase</option>
+                        <option value="Sentence">Sentence</option>
+                        <option value="Conversation">Conversation</option>
+                    </select>
+                </div>
+            </div>
+
+            <h1>Speech Tracker</h1>
+            <div class="percentage">0%</div>
+            <div class="button-row">
+                <div class="counter-group">
+                    <button class="btn correct">Correct</button>
+                    <span id="correct-count">0</span>
+                </div>
+                <div class="counter-group">
+                    <button class="btn incorrect">Incorrect</button>
+                    <span id="incorrect-count">0</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="save-btn" class="save-btn">Save</button>
+                <button id="reset-btn" class="reset-link">Reset</button>
+            </div>
+
+            <div id="history-log" class="history-log"></div>
+        </div>
+
+        <div id="dashboard-view" class="hidden">
+            <div class="session-info">
+                <h3>Client Progress Search</h3>
+                <input type="text" id="search-client" placeholder="Type child's name (e.g. Leo)">
+            </div>
+
+            <div id="client-history-results">
+                <p style="color: #7f8c8d; text-align: center; margin-top: 20px;">Search for a client to see their
+                    progress history.</p>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+</body>
+
+</html>

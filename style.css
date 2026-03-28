@@ -1,0 +1,117 @@
+body {
+    background-color: #f0f4f8;
+    /* Soft light blue/grey */
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background: white;
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.btn {
+    padding: 20px 40px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    margin: 10px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.correct {
+    background-color: #a6d088;
+    color: #000000;
+}
+
+/* Pastel Teal */
+.incorrect {
+    background-color: #f88888;
+    color: #000000;
+}
+
+/* Soft Red */
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* Makes it feel tactile! */
+
+.counter-group {
+    display: flex;
+    flex-direction: row;
+    /* Puts the number next to the button */
+    align-items: center;
+    margin: 10px;
+}
+
+#correct-count,
+#incorrect-count {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #1d3557;
+    /* Dark blue to match your text */
+}
+
+.reset-link {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    /* Soft grey */
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 30px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.reset-link:hover {
+    color: #91b1d4;
+    /* Turns soft blue when you hover to warn you */
+    text-decoration: underline;
+}
+
+/* Stack the sound and level vertically */
+.target-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Style the Dropdown */
+#speech-level {
+    border: 1px solid #ecf0f1;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    color: #7f8c8d;
+    background-color: #fafcfd;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Style the inputs */
+.session-info input {
+    border-bottom: 2px solid #ecf0f1;
+    /* A light grey underline */
+}
+
+.session-info input:focus {
+    border-color: #a8dadc;
+    /* Changes to Pastel Teal when clicked! */
+}
+
+#speech-level:focus {
+    border-color: #a8dadc;
+    color: #1d5657;
+}
