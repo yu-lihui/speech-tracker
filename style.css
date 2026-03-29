@@ -8,6 +8,11 @@ body {
     height: 100vh;
 }
 
+/* Prevent iOS zoom on focus */
+input, select, textarea {
+    font-size: 16px !important;
+}
+
 .container {
     text-align: center;
     background: white;
@@ -224,4 +229,37 @@ body {
     /* Dark blue border so it stands out */
     border-radius: 8px;
     font-size: 16px;
+}
+
+/* MOBILE OPTIMIZATION */
+@media (max-width: 480px) {
+    body {
+        align-items: flex-start; /* Start at the top, don't float in the middle */
+        padding: 0;
+        margin: 0;
+        background-color: #ffffff; /* Match container for a seamless look */
+    }
+
+    .container {
+        width: 100%;
+        min-height: 100vh; /* Fill the whole screen height */
+        border-radius: 0;  /* Remove rounded corners on mobile */
+        padding: 15px;     /* Tighten up padding */
+        box-shadow: none;  /* Remove shadow for a flatter, cleaner app look */
+    }
+
+    .button-row {
+        flex-direction: column; /* Stack Correct/Incorrect for big thumb targets */
+        gap: 15px;
+    }
+
+    .btn {
+        width: 100%;       /* Make buttons full-width */
+        padding: 25px;     /* Much bigger hit area for fast tapping */
+        font-size: 22px;   /* Easier to read while glancing at a child */
+    }
+
+    #correct-count, #incorrect-count {
+        font-size: 32px;   /* Make the tally numbers huge */
+    }
 }
