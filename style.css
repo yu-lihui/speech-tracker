@@ -16,12 +16,73 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
+/* Navigation Menu Styles */
+.nav-menu {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 15px;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #95a5a6;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+/* The active room highlights in dark blue */
+.nav-btn.active {
+    background-color: #1d3557;
+    color: white;
+}
+
+/* THE MAGIC DOOR: This hides whichever room we aren't in */
+.hidden {
+    display: none !important;
+}
+
+.percentage {
+    font-size: 20px
+}
+
+.button-row {
+    display: flex;
+    /* Enables the "Flexbox" layout */
+    justify-content: center;
+    /* Centers the items horizontally */
+    align-items: center;
+    /* Centers the items vertically */
+    gap: 40px;
+    /* Creates a consistent "DMZ" gap between the two buttons */
+    margin: 30px 0;
+    /* Adds breathing room above and below the row */
+    width: 100%;
+    /* Takes up the full width of the container */
+}
+
+.counter-group {
+    display: flex;
+    flex-direction: column;
+    /* Keeps the button on top of its number */
+    align-items: center;
+    /* Centers the button and number together */
+    gap: 10px;
+    /* Adds a little space between button and number */
+    text-align: center;
+}
+
 .btn {
     padding: 20px 40px;
     font-size: 18px;
     border: none;
     border-radius: 30px;
-    margin: 10px;
     cursor: pointer;
     transition: transform 0.1s;
 }
@@ -40,16 +101,6 @@ body {
 /* Soft Red */
 .btn:active {
     transform: scale(0.95);
-}
-
-/* Makes it feel tactile! */
-
-.counter-group {
-    display: flex;
-    flex-direction: row;
-    /* Puts the number next to the button */
-    align-items: center;
-    margin: 10px;
 }
 
 #correct-count,
@@ -91,8 +142,8 @@ body {
 /* Style the Dropdown */
 #speech-level {
     border: 1px solid #ecf0f1;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 15px;
+    padding: 8px 12px;
     font-size: 13px;
     color: #7f8c8d;
     background-color: #fafcfd;
@@ -102,16 +153,75 @@ body {
 
 /* Style the inputs */
 .session-info input {
+    border: none;
+    /* Wipes out the default 4-sided black box completely! */
     border-bottom: 2px solid #ecf0f1;
     /* A light grey underline */
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    background-color: transparent;
+    /* Makes sure the background blends in */
+
 }
 
 .session-info input:focus {
-    border-color: #a8dadc;
+    border-bottom-color: #a8dadc;
     /* Changes to Pastel Teal when clicked! */
 }
 
 #speech-level:focus {
     border-color: #a8dadc;
     color: #1d5657;
+}
+
+/* The Save Button */
+.save-btn {
+    background-color: #1d3557;
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 25px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.save-btn:hover {
+    background: #91b1d4;
+}
+
+.save-btn:active {
+    transform: scale(0.95);
+}
+
+/* The History Tabs */
+.history-log {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.history-pill {
+    background: #f1faee;
+    padding: 8px 15px;
+    border-radius: 15px;
+    font-size: 12px;
+    border: 1px solid #a8dadc;
+    color: #1d3557;
+}
+
+#search-client {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 2px solid #1d3557;
+    /* Dark blue border so it stands out */
+    border-radius: 8px;
+    font-size: 16px;
 }
