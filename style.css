@@ -330,4 +330,27 @@ h1 {
         font-size: 40px;   /* Make the tally numbers huge */
         margin-top: 15px;
     }
+
+    .session-info input, 
+    #search-client {
+        width: 100% !important; /* Forces it to stay within the container */
+        box-sizing: border-box;   /* Includes padding in the width calculation */
+        font-size: 16px;          /* Prevents iPhone auto-zoom */
+        margin-bottom: 10px;      /* Adds space between the bar and the button */
+    }
+
+    /* 2. Make the 'Download CSV' button fit nicely below it */
+    #download-csv {
+        width: 100% !important;
+        padding: 15px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+
+    /* 3. Ensure the search area container doesn't have too much side padding */
+    .session-info {
+        padding: 15px 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
