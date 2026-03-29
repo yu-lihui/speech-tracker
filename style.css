@@ -257,6 +257,16 @@ input, select, textarea {
         width: 100%;       /* Make buttons full-width */
         padding: 25px;     /* Much bigger hit area for fast tapping */
         font-size: 22px;   /* Easier to read while glancing at a child */
+        /* 1. This tells the iPhone: "Don't wait for a double-tap, just click now!" */
+        touch-action: manipulation; 
+
+        /* 2. This removes the grey "flicker" box that appears when you tap */
+        -webkit-tap-highlight-color: transparent;
+
+        /* 3. This stops the phone from trying to "select" the text on the button */
+        user-select: none;
+        -webkit-user-select: none;
+
     }
 
     #correct-count, #incorrect-count {
