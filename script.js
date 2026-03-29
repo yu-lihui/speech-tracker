@@ -96,7 +96,7 @@ function showClientProgress(searchTerm) {
 
     // 1. THE FILTER: Only grab sessions that match the name typed
     const filteredSessions = allSessions.filter(session =>
-        session.name.toLowerCase().includes(searchTerm.toLowerCase())
+        session.name.toLowerCase() === searchTerm.toLowerCase()
     );
 
     if (filteredSessions.length === 0) {
@@ -125,6 +125,9 @@ function showAllGoalProgress(clientSessions) {
     container.innerHTML = ""; // Clear old bars
 
     if (clientSessions.length === 0) return;
+
+    container.style.display = "block"; // Only "turn on" the lights when we have data!
+    container.innerHTML = "";
 
     // 1. GROUPING: Create a list of unique goals (e.g., "/k/ Word", "/k/ Phrase")
     const goals = {};
@@ -159,6 +162,31 @@ function showAllGoalProgress(clientSessions) {
         `;
         container.appendChild(goalDiv);
     });
+}
+
+function downloadCSV() {
+    const searchTerm = document.querySelector('#search-client').value;
+    const sessionsToExport = allSessions.filter(s => 
+        s.name.toLowerCase() === searchTerm.toLowerCase()
+    );
+
+    if (sessionsToExport.length === 0) return alert("No data to download!");
+
+    // Create the CSV Header
+    let csvContent = "Date,Client,Sound,Level,Accuracy\n";
+
+    // Add each row
+    sessionsToExport.forEach(s => {
+        csvContent += `${s.date},${s.name},${s.sound},${s.level},${s.accuracy}\n`;
+    });
+
+    // Create a hidden "download link" and click it automatically
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `${searchTerm}_Progress_Report.csv`);
+    a.click();
 }
 
 // 4. Tell the buttons to listen for clicks
@@ -218,17 +246,21 @@ searchInput.addEventListener('input', () => {
 
         // Find all sessions for this specific child
         const clientSessions = allSessions.filter(s =>
-            s.name.toLowerCase().includes(term.toLowerCase())
+            s.name.toLowerCase() === term.toLowerCase()
         );
 
         // Tell the new Artist to draw all the different goal bars
         showAllGoalProgress(clientSessions);
 
     } else {
-        document.querySelector('#all-goals-container').innerHTML = "";
+        goalContainer.innerHTML = "";
+        goalContainer.style.display = "none"; // Physically hide the container when search is empty
         resultsContainer.innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see their progress history.</p>`;
     }
 });
+
+// Download button trigger
+document.querySelector('#download-csv').addEventListener('click', downloadCSV);
 
 // NAVIGATION LOGIC (Switching Rooms)
 navTracker.addEventListener('click', () => {
@@ -236,6 +268,16 @@ navTracker.addEventListener('click', () => {
     navDashboard.classList.remove('active');
     trackerView.classList.remove('hidden');
     dashboardView.classList.add('hidden');
+
+    // THE FIX: Hide the progress bars when we leave the dashboard
+    const goalContainer = document.querySelector('#all-goals-container');
+    goalContainer.innerHTML = "";
+    goalContainer.style.display = "none"; // This hides the gray box/gap entirely
+    // Also clear the search box so it's fresh for next time
+    document.querySelector('#search-client').value = "";
+
+    // Clear the results message too
+    document.querySelector('#client-history-results').innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see their progress history.</p>`;
 });
 
 navDashboard.addEventListener('click', () => {
@@ -244,3 +286,6 @@ navDashboard.addEventListener('click', () => {
     dashboardView.classList.remove('hidden');
     trackerView.classList.add('hidden');
 });
+
+// KICKSTART THE APP: Load any saved data immediately
+loadHistory();
