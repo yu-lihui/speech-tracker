@@ -285,6 +285,7 @@ h1 {
         width: 100%;       /* Make buttons full-width */
         padding: 30px 5px;     /* Much bigger hit area for fast tapping */
         font-size: 18px;   /* Easier to read while glancing at a child */
+        border-radius: 50%;
         /* 1. This tells the iPhone: "Don't wait for a double-tap, just click now!" */
         touch-action: manipulation; 
 
