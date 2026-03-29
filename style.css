@@ -302,11 +302,20 @@ h1 {
     }
 
     .btn {
-        width: 80px;            /* Slightly smaller for iPhone screens */
-        height: 80px;           /* Must match width */
-        font-size: 14px;        /* Slightly smaller text for fit */
-        margin: 0;              /* Reset margin so gap handles spacing */
-        touch-action: manipulation; /* Keep instant tap */
+        /* This makes the circle relative to the screen width */
+        width: 38vw;  
+        height: 38vw; 
+        max-width: 150px; /* Prevents it from getting crazy big on tablets */
+        max-height: 150px;
+        
+        border-radius: 50%;
+        font-size: 18px; /* Makes the ✓ and ✕ huge */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        touch-action: manipulation;
 
         /* 2. This removes the grey "flicker" box that appears when you tap */
         -webkit-tap-highlight-color: transparent;
@@ -318,7 +327,7 @@ h1 {
     }
 
     #correct-count, #incorrect-count {
-        font-size: 32px;   /* Make the tally numbers huge */
+        font-size: 40px;   /* Make the tally numbers huge */
         margin-top: 15px;
     }
 }
