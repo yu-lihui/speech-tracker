@@ -99,11 +99,31 @@ h1 {
 
 .btn {
     padding: 20px 40px;
-    font-size: 18px;
+    font-size: 16px;
     border: none;
     border-radius: 30px;
     cursor: pointer;
     transition: transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+    /* THE CIRCLE MAGIC */
+    width: 100px;           /* Exact width */
+    height: 100px;          /* Exact height (must match width) */
+    border-radius: 50%;     /* Makes it a circle */
+    
+    /* Center the text inside the circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;             /* Remove previous padding */
+    margin: 10px;           /* Gives them breathing room */
+    box-sizing: border-box; /* Ensures border doesn't affect size */
+}
+
+/* Maintain the "pressed" effect */
+.btn:active {
+    transform: translateY(2px) scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .correct {
@@ -270,7 +290,7 @@ h1 {
         flex-direction: row !important; 
         display: flex;
         justify-content: space-around;
-        gap: 12px; /* Small enough to fit, big enough to distinguish */
+        gap: 15px; /* Small enough to fit, big enough to distinguish */
         margin: 20px 0;
     }
 
@@ -282,12 +302,11 @@ h1 {
     }
 
     .btn {
-        width: 100%;       /* Make buttons full-width */
-        padding: 30px 5px;     /* Much bigger hit area for fast tapping */
-        font-size: 18px;   /* Easier to read while glancing at a child */
-        border-radius: 50%;
-        /* 1. This tells the iPhone: "Don't wait for a double-tap, just click now!" */
-        touch-action: manipulation; 
+        width: 80px;            /* Slightly smaller for iPhone screens */
+        height: 80px;           /* Must match width */
+        font-size: 14px;        /* Slightly smaller text for fit */
+        margin: 0;              /* Reset margin so gap handles spacing */
+        touch-action: manipulation; /* Keep instant tap */
 
         /* 2. This removes the grey "flicker" box that appears when you tap */
         -webkit-tap-highlight-color: transparent;
@@ -300,5 +319,6 @@ h1 {
 
     #correct-count, #incorrect-count {
         font-size: 32px;   /* Make the tally numbers huge */
+        margin-top: 15px;
     }
 }
