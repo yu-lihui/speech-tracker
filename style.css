@@ -261,22 +261,29 @@ h1 {
     }
 
     .container {
+        padding: 15px 10px;
         width: 100%;
-        min-height: 100vh; /* Fill the whole screen height */
-        border-radius: 0;  /* Remove rounded corners on mobile */
-        padding: 15px;     /* Tighten up padding */
-        box-shadow: none;  /* Remove shadow for a flatter, cleaner app look */
+        box-shadow: none;
     }
 
     .button-row {
-        flex-direction: row;
-        gap: 15px;
-        justify-content: center;
+        flex-direction: row !important; 
+        display: flex;
+        justify-content: space-around;
+        gap: 12px; /* Small enough to fit, big enough to distinguish */
+        margin: 20px 0;
+    }
+
+    .counter-group {
+        flex: 1; /* This forces both buttons to be the exact same width */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .btn {
         width: 100%;       /* Make buttons full-width */
-        padding: 25px 10px;     /* Much bigger hit area for fast tapping */
+        padding: 30px 5px;     /* Much bigger hit area for fast tapping */
         font-size: 18px;   /* Easier to read while glancing at a child */
         /* 1. This tells the iPhone: "Don't wait for a double-tap, just click now!" */
         touch-action: manipulation; 
