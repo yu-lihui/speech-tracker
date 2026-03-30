@@ -71,19 +71,37 @@ function loadHistory() {
 }
 
 function redrawPills() {
-    // 1. Wipe the screen completely clean first
+    // 1. Wipe the screen clean
     historyLog.innerHTML = "";
 
-    // 2. Read down the spreadsheet, row by row
-    allSessions.forEach((session, index) => {
+    // 2. Loop through sessions (Latest on top)
+    [...allSessions].reverse().forEach((session, originalIndex) => {
+        const index = allSessions.length - 1 - originalIndex;
         const pill = document.createElement('div');
         pill.classList.add('history-pill');
+        
+        // Consistent spacing and "no-text" zone for the X
+        pill.style.cssText = "border: 1px solid #1d3557; margin-bottom: 10px; padding: 12px; padding-right: 40px; border-radius: 8px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
 
-        // We use session.name instead of just name now!
+        const displayDate = new Date(session.date).toLocaleDateString('en-GB');
+
         pill.innerHTML = `
-            <strong>${session.name}</strong>: ${session.sound} (${session.level}) - ${session.accuracy} 
-            <br><small style="color: #95a5a6;">${session.date}</small>
-            <span class="delete-btn" data-index="${index}" style="cursor: pointer; margin-left: 8px; color: #e63946; font-weight: bold; float: right;">&times;</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="flex: 1;">
+                    <strong style="color: #1d3557; font-size: 14px;">${session.name}</strong>: ${session.sound}
+                    <div style="font-size: 11px; color: #7f8c8d; margin-top: 2px;">
+                        ${session.level} | Cues: ${session.prompt}
+                    </div>
+                    <div style="font-size: 10px; color: #bdc3c7; margin-top: 2px;">${displayDate}</div>
+                </div>
+                <div style="text-align: right; margin-left: 10px;">
+                    <span style="font-size: 18px; font-weight: bold; color: ${session.accuracy >= 80 ? '#2a9d8f' : '#e76f51'};">
+                        ${session.accuracy}%
+                    </span>
+                </div>
+            </div>
+            <span class="delete-btn" data-index="${index}" 
+                  style="cursor: pointer; position: absolute; top: 10px; right: 10px; color: #e63946; font-size: 22px; line-height: 1; padding: 5px 8px;">&times;</span>
         `;
 
         historyLog.appendChild(pill);
@@ -166,7 +184,7 @@ function showAllGoalProgress(clientSessions) {
 
 function downloadCSV() {
     const searchTerm = document.querySelector('#search-client').value;
-    const sessionsToExport = allSessions.filter(s => 
+    const sessionsToExport = allSessions.filter(s =>
         s.name.toLowerCase() === searchTerm.toLowerCase()
     );
 
@@ -191,93 +209,153 @@ function downloadCSV() {
 
 // 4. Tell the buttons to listen for clicks
 btnCorrect.addEventListener('click', () => {
-    correctCount++; // Adds 1
+    correctCount++;
     updateAccuracy();
 });
 
 btnIncorrect.addEventListener('click', () => {
-    incorrectCount++; // Adds 1
+    incorrectCount++;
     updateAccuracy();
 });
 
-btnReset.addEventListener('click', resetAll);
+btnReset.addEventListener('click', () => {
+    resetAll();
+    // Clear the selected chips
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+});
 
-// The UPGRADED Save Button (with the Level and Delete button!)
 saveBtn.addEventListener('click', () => {
-    // Package data into a neat JSON row
+    const clientName = document.getElementById('client-name').value || "Unknown";
+    const soundVal = document.getElementById('speech-sound').value || "General";
+    const positionVal = document.getElementById('speech-position').value || "";
+
+    // Calculate accuracy number right here
+    const total = correctCount + incorrectCount;
+    const finalAccuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
     const newSession = {
-        name: clientInput.value || "Unknown",
-        sound: soundInput.value || "General",
-        level: levelInput.value,
-        accuracy: percentageDisplay.textContent,
-        date: new Date().toLocaleDateString('en-GB')
+        name: clientName,
+        sound: `${soundVal} ${positionVal}`.trim(),
+        level: document.getElementById('speech-level').value,
+        prompt: getSelectedCues(),
+        correct: correctCount,
+        incorrect: incorrectCount,
+        accuracy: finalAccuracy,
+        date: new Date().toISOString()
     };
 
-    // Push this new row into our invisible excel sheet
     allSessions.push(newSession);
-
-    // Save the new sheet, and redraw the screen
     saveHistory();
     redrawPills();
+
+    alert(`Session saved for ${clientName}!`);
+    btnReset.click();
 });
 
 // JSON Master Delete Listener
 historyLog.addEventListener('click', (event) => {
     if (event.target.classList.contains('delete-btn')) {
-        // 1. Find out exactly which row number we clicked on
         const rowIndex = event.target.getAttribute('data-index');
-
-        // 2. splice() cuts that exact row out of our Excel Sheet
         allSessions.splice(rowIndex, 1);
-
-        // 3. Save the new, smaller sheet, and redraw the screen!
         saveHistory();
         redrawPills();
     }
 });
 
-// Search trigger
+// Search trigger - Updated to use the new Table Layout
 searchInput.addEventListener('input', () => {
     const term = searchInput.value.trim();
-    const resultsContainer = document.querySelector('#client-history-results');
-
     if (term.length > 0) {
-        showClientProgress(term);
-
-        // Find all sessions for this specific child
-        const clientSessions = allSessions.filter(s =>
-            s.name.toLowerCase() === term.toLowerCase()
-        );
-
-        // Tell the new Artist to draw all the different goal bars
-        showAllGoalProgress(clientSessions);
-
+        displayClientHistory(term);
     } else {
-        goalContainer.innerHTML = "";
-        goalContainer.style.display = "none"; // Physically hide the container when search is empty
-        resultsContainer.innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see their progress history.</p>`;
+        document.getElementById('all-goals-container').innerHTML = "";
+        document.getElementById('client-history-results').innerHTML =
+            `<p style="text-align:center; color:#95a5a6;">Search for a client to see their progress history.</p>`;
     }
 });
+
+// Helper to grab selected cues
+function getSelectedCues() {
+    const selected = Array.from(document.querySelectorAll('.chip.selected'))
+        .map(c => c.getAttribute('data-value'));
+    return selected.length > 0 ? selected.join(', ') : 'Indpt';
+}
+
+// Chip Toggle Logic
+document.getElementById('prompt-chips').addEventListener('click', (e) => {
+    if (e.target.classList.contains('chip')) {
+        e.target.classList.toggle('selected');
+    }
+});
+
+// THE NEW PROGRESS VIEWER: Groups by sound and shows latest at top
+function displayClientHistory(clientName) {
+    const container = document.getElementById('all-goals-container');
+    const messageArea = document.getElementById('client-history-results');
+
+    // Filter all sessions for this specific child
+    const clientData = allSessions.filter(h => h.name.toLowerCase() === clientName.toLowerCase());
+
+    container.innerHTML = '';
+
+    if (clientData.length === 0) {
+        messageArea.innerHTML = `<p style="text-align:center; color:#95a5a6;">No sessions found for "${clientName}".</p>`;
+        return;
+    } else {
+        messageArea.innerHTML = ""; // Clear the search message
+    }
+
+    // Group by Target Sound
+    const groups = {};
+    clientData.forEach(entry => {
+        if (!groups[entry.sound]) groups[entry.sound] = [];
+        groups[entry.sound].push(entry);
+    });
+
+    for (const sound in groups) {
+        const card = document.createElement('div');
+        card.className = 'goal-card';
+        card.style.cssText = "margin-bottom:20px; border:1px solid #1d3557; border-radius:10px; overflow:hidden; background:white;";
+
+        let rows = groups[sound]
+            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Latest at top
+            .map(entry => `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding:10px;">${entry.level}</td>
+                    <td style="padding:10px; color:#7f8c8d;">${entry.prompt || 'Indpt'}</td>
+                    <td style="padding:10px; text-align:center; font-weight:bold; color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
+                        ${entry.accuracy}%
+                    </td>
+                    <td style="padding:10px; text-align:right; font-size:10px; color:#bdc3c7;">${new Date(entry.date).toLocaleDateString('en-GB')}</td>
+                </tr>
+            `).join('');
+
+        card.innerHTML = `
+            <div style="background:#1d3557; color:white; padding:10px; font-weight:bold; text-align:center;">${sound}</div>
+            <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+                <thead>
+                    <tr style="background:#f8f9fa; border-bottom:1px solid #ddd;">
+                        <th style="padding:8px; text-align:left;">Level</th>
+                        <th style="padding:8px; text-align:left;">Cues</th>
+                        <th style="padding:8px; text-align:center;">Acc%</th>
+                        <th style="padding:8px; text-align:right;">Date</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>`;
+        container.appendChild(card);
+    }
+}
 
 // Download button trigger
 document.querySelector('#download-csv').addEventListener('click', downloadCSV);
 
-// NAVIGATION LOGIC (Switching Rooms)
+// NAVIGATION LOGIC
 navTracker.addEventListener('click', () => {
     navTracker.classList.add('active');
     navDashboard.classList.remove('active');
     trackerView.classList.remove('hidden');
     dashboardView.classList.add('hidden');
-
-    // THE FIX: Hide the progress bars when we leave the dashboard
-    const goalContainer = document.querySelector('#all-goals-container');
-    goalContainer.innerHTML = "";
-    goalContainer.style.display = "none"; // This hides the gray box/gap entirely
-    // Also clear the search box so it's fresh for next time
-    document.querySelector('#search-client').value = "";
-
-    // Clear the results message too
-    document.querySelector('#client-history-results').innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see their progress history.</p>`;
 });
 
 navDashboard.addEventListener('click', () => {
@@ -287,5 +365,5 @@ navDashboard.addEventListener('click', () => {
     trackerView.classList.add('hidden');
 });
 
-// KICKSTART THE APP: Load any saved data immediately
+// KICKSTART THE APP
 loadHistory();
