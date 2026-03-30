@@ -15,58 +15,113 @@
 
         <div id="tracker-view">
             <div class="session-info">
-                <input type="text" id="client-name" placeholder="Client Name">
-                <div class="target-group">
-                    <input type="text" id="speech-sound" placeholder="Target Sound (e.g., /s/)">
-                    <select id="speech-level">
-                        <option value="Sound">Sound</option>
-                        <option value="Word">Word</option>
-                        <option value="Phrase">Phrase</option>
-                        <option value="Sentence">Sentence</option>
+                <input type="text" id="client-name" placeholder="Client Name" autocomplete="off">
+
+                <div class="target-grid">
+                    <select id="speech-sound">
+                        <option value="" disabled selected>Speech sound</option>
+                        <optgroup label="Velar stops">
+                            <option value="/k/">/k/</option>
+                            <option value="/g/">/g/</option>
+                        </optgroup>
+                        <optgroup label="Fricatives">
+                            <option value="/s/">/s/</option>
+                            <option value="/z/">/z/</option>
+                            <option value="/ʃ/">/ʃ/</option>
+                            <option value="/θ/">/θ/</option>
+                            <option value="/f/">/f/</option>
+                            <option value="/v/">/v/</option>
+                            <option value="/h/">/h/</option>
+                        </optgroup>
+                        <optgroup label="Affricates">
+                            <option value="/tʃ/">/tʃ/</option>
+                            <option value="/dʒ/">/dʒ/</option>
+                        </optgroup>
+                        <optgroup label="s-clusters">
+                            <option value="/sp/">/sp/</option>
+                            <option value="/st/">/st/</option>
+                            <option value="/sk/">/sk/</option>
+                            <option value="/sn/">/sn/</option>
+                            <option value="/sm/">/sm/</option>
+                            <option value="/sl/">/sl/</option>
+                            <option value="/sw/">/sw/</option>
+                            <option value="/s-blends/">s-blends</option>
+                        </optgroup>
+                        <optgroup label="Liquids">
+                            <option value="/l/">/l/</option>
+                            <option value="/r/">/r/</option>
+                        </optgroup>
+                    </select>
+
+                    <select id="speech-position">
+                        <option value="" disabled selected>Position</option>
+                        <option value="Initial">initial</option>
+                        <option value="Medial">medial</option>
+                        <option value="Final">final</option>
+                    </select>
+
+                    <select id="speech-level" style="grid-column: span 2;">
+                        <option value="Sound">Sound level</option>
+                        <option value="Word">Word level</option>
+                        <option value="Phrase">Phrase level</option>
+                        <option value="Sentence">Sentence level</option>
                         <option value="Conversation">Conversation</option>
                     </select>
                 </div>
-            </div>
 
-            <h1>Speech Tracker</h1>
-            <div class="percentage">0%</div>
-            <div class="button-row">
-                <div class="counter-group">
-                    <button class="btn correct">Correct</button>
-                    <span id="correct-count">0</span>
-                </div>
-                <div class="counter-group">
-                    <button class="btn incorrect">Incorrect</button>
-                    <span id="incorrect-count">0</span>
+                <div class="prompt-container">
+                    <p class="label-text">Cues provided</p>
+                    <div class="prompt-chips" id="prompt-chips">
+                        <button type="button" class="chip" data-value="Indpt">Independent</button>
+                        <button type="button" class="chip" data-value="Visual">Visual</button>
+                        <button type="button" class="chip" data-value="Verbal">Verbal</button>
+                        <button type="button" class="chip" data-value="Tactile">Tactile</button>
+                        <button type="button" class="chip" data-value="Model">Modelling</button>
+                    </div>
                 </div>
             </div>
+            <div class="tracker-main">
+                <h1>Speech Tracker</h1>
+                <div class="percentage">0%</div>
 
-            <div class="actions">
-                <button id="save-btn" class="save-btn">Save</button>
-                <button id="reset-btn" class="reset-link">Reset</button>
+                <div class="button-row">
+                    <div class="counter-group">
+                        <button class="btn correct">✓</button>
+                        <span id="correct-count">0</span>
+                    </div>
+                    <div class="counter-group">
+                        <button class="btn incorrect">✕</button>
+                        <span id="incorrect-count">0</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="save-btn" class="save-btn">Save</button>
+                    <button id="reset-btn" class="reset-link">Reset</button>
+                </div>
+
+                <div id="history-log" class="history-log"></div>
             </div>
-
-            <div id="history-log" class="history-log"></div>
         </div>
 
         <div id="dashboard-view" class="hidden">
             <div class="session-info">
                 <h3>Client Progress Search</h3>
                 <input type="text" id="search-client" placeholder="Type child's name (e.g. Leo)">
-                <button id="download-csv" class="save-btn" style="margin-top: 10px; background-color: #2a9d8f;">Download
-                    CSV Report</button>
+                <button id="download-csv" class="save-btn" style="margin-top: 10px; background-color: #b8d9c6;">Download
+                    CSV Report
+                </button>
+            </div>
+
+            <div id="all-goals-container" style="margin: 20px 0;"></div>
+
+            <div id="client-history-results">
+                <p style="color: #7f8c8d; text-align: center; margin-top: 20px;">Search for a client to see their
+                    progress history.
+                </p>
             </div>
         </div>
-
-        <div id="all-goals-container" style="margin: 20px 0;"></div>
-
-        <div id="client-history-results">
-            <p style="color: #7f8c8d; text-align: center; margin-top: 20px;">Search for a client to see their
-                progress history.</p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+        <script src="script.js"></script>
 </body>
 
 </html>
