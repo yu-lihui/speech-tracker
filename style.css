@@ -373,12 +373,13 @@ h1 {
         height: 38vw; 
         max-width: 150px; /* Prevents it from getting crazy big on tablets */
         max-height: 150px;
-        
         border-radius: 50%;
-        font-size: 18px; /* Makes the ✓ and ✕ huge */
+        font-size: 60px;    /* Much larger for mobile */
+        font-weight: 900;   /* Extra thick symbols */
         display: flex;
         justify-content: center;
         align-items: center;
+        line-height: 0;     /* Helps perfectly center the symbols */
         padding: 0;
         margin: 0;
         touch-action: manipulation;
