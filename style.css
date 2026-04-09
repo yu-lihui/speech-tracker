@@ -177,13 +177,7 @@ h1 {
     background-color: #1d3557 !important; /* Dark blue when active */
     color: #ffffff !important;           /* Pure white text */
     border-color: #1d3557 !important;
-}
-
-.chip.selected {
-    background-color: #1d3557 !important;
-    color: white !important;
-    border-color: #1d3557 !important;
-    border-radius: 10px;
+    border-radius: 25px;
 }
 
 /* 6. MOBILE OVERRIDES - The Friendly Version */
