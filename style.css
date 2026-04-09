@@ -158,6 +158,17 @@ h1 {
     text-align: left;
 }
 
+/* --- HISTORY LOG SECTION --- */
+.history-log {
+    margin-top: 50px;       /* Increased from 30px to push it further from Save/Reset */
+    display: flex;
+    flex-direction: column; /* Keeps pills stacked neatly */
+    gap: 12px;
+    border-top: 2px solid #ecf0f1; /* Slightly thicker line for clear separation */
+    padding-top: 30px;      /* Space between the line and the first pill */
+    width: 100%;
+}
+
 #download-csv {
     display: block;          /* Allows margin auto to work */
     margin: 15px auto 0 auto; /* 15px top, auto left/right to center */
