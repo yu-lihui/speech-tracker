@@ -1,74 +1,49 @@
-body {
-    background-color: #f0f4f8;
-    /* Soft light blue/grey */
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-/* Prevent iOS zoom on focus */
-input, select, textarea {
-    font-size: 16px !important;
-}
-
-h1 {
-    font-size: 16px;            /* Much smaller, similar to a label */
-    text-transform: uppercase; /* Forces ALL CAPS */
-    letter-spacing: 3px;       /* Adds professional "breathing room" between letters */
-    color: #95a5a6;            /* Soft grey so it doesn't compete with the big percentage */
-    margin-bottom: 5px;        /* Pulls the percentage number closer to the title */
-    font-weight: 600;          /* Semi-bold for a clean look */
-}
-
-/* Ensure the total width includes padding so nothing spills out */
+/* 1. THE FOUNDATION */
 * {
     box-sizing: border-box;
 }
 
-/* Update your tracker view to start lower down */
-#tracker-view {
-    padding-top: 20px; /* Adjust this number if it still looks too close */
-
-.container {
-    display: block;
-    margin-top: 50px !important; /* Matches header height */
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-top: 10px; /* Extra breathing room */
-    width: 100%;
-    max-width: 500px; /* Keeps it looking like a phone app even on desktop */
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    background: white;
-    box-sizing: border-box;
-    padding: 15px;
-    border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    position: relative; /* Removes it from any fixed/absolute overlap */
-    
+body {
+    background-color: #f0f4f8;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Removed flex-centering to allow the app to flow from the top */
+    display: block; 
 }
 
-/* Navigation Menu Styles */
+/* 2. THE APP CONTAINER */
+.container {
+    display: block;
+    margin: 60px auto 20px auto; /* 60px top margin clears the fixed header */
+    width: 95%;
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    position: relative;
+    text-align: center;
+}
+
+/* 3. NAVIGATION MENU */
 .nav-menu {
     position: sticky;
-    top: 50px; /* If the menu is sticky, it stays below the header */
-    background-color: white; /* Prevents text from overlapping during scroll */
+    top: 50px; /* Sticks exactly below the email header */
+    background-color: white;
     z-index: 999;
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 30px !important; /* Forces the inputs further down */
+    margin-bottom: 20px;
+    padding: 10px 0;
     border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 15px;
 }
 
 .nav-btn {
     background: none;
     border: none;
-    font-size: 16px;
+    font-size: 14px;
     color: #95a5a6;
     cursor: pointer;
     padding: 8px 16px;
@@ -76,132 +51,63 @@ h1 {
     transition: all 0.3s ease;
 }
 
-/* The active room highlights in dark blue */
 .nav-btn.active {
     background-color: #1d3557;
     color: white;
 }
 
-/* THE MAGIC DOOR: This hides whichever room we aren't in */
-.hidden {
-    display: none !important;
+/* 4. TRACKER ELEMENTS */
+h1 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #95a5a6;
+    margin-top: 10px;
 }
 
 .percentage {
-    font-size: 64px;          /* Makes the number huge */
-    font-weight: 700;         /* Extra bold */
-    color: #1d3557;           /* Deep professional blue */
-    margin: 20px 0;           /* Gives it breathing room */
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Adds a tiny bit of "pop" */
-    transition: all 0.3s ease; /* Smoothly changes when the number updates */
+    font-size: 64px;
+    font-weight: 700;
+    color: #1d3557;
+    margin: 10px 0;
 }
 
 .button-row {
     display: flex;
-    /* Enables the "Flexbox" layout */
     justify-content: center;
-    /* Centers the items horizontally */
-    align-items: center;
-    /* Centers the items vertically */
-    gap: 40px;
-    /* Creates a consistent "DMZ" gap between the two buttons */
-    margin: 30px 0;
-    /* Adds breathing room above and below the row */
-    width: 100%;
-    /* Takes up the full width of the container */
+    gap: 20px;
+    margin: 20px 0;
 }
 
 .counter-group {
     display: flex;
     flex-direction: column;
-    /* Keeps the button on top of its number */
     align-items: center;
-    /* Centers the button and number together */
-    gap: 10px;
-    /* Adds a little space between button and number */
-    text-align: center;
 }
 
 .btn {
-    padding: 20px 40px;
-    font-size: 50px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: transform 0.1s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-    /* THE CIRCLE MAGIC */
-    width: 100px;           /* Exact width */
-    height: 100px;          /* Exact height (must match width) */
-    border-radius: 50%;     /* Makes it a circle */
-    
-    /* Center the text inside the circle */
+    font-size: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0;             /* Remove previous padding */
-    margin: 10px;           /* Gives them breathing room */
-    box-sizing: border-box; /* Ensures border doesn't affect size */
-}
-
-/* Maintain the "pressed" effect */
-.btn:active {
-    transform: translateY(2px) scale(0.95);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.correct {
-    background-color: #a6d088;
-    color: #ffffff;
-}
-
-/* Pastel Teal */
-.incorrect {
-    background-color: #f88888;
-    color: #ffffff;
-}
-
-/* Soft Red */
-.btn:active {
-    transform: scale(0.95);
-}
-
-#correct-count {
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 5px;
-    color: #a6d088;
-}
-
-
-#incorrect-count {
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 5px;
-    color: #f88888;
-}
-
-.reset-link {
-    background: none;
-    border: none;
-    color: #95a5a6;
-    /* Soft grey */
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 30px;
     cursor: pointer;
-    transition: color 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    -webkit-tap-highlight-color: transparent;
 }
 
-.reset-link:hover {
-    color: #91b1d4;
-    /* Turns soft blue when you hover to warn you */
-    text-decoration: underline;
+.correct { background-color: #a6d088; color: white; }
+.incorrect { background-color: #f88888; color: white; }
+
+.btn:active {
+    transform: scale(0.92);
+    filter: brightness(0.9);
 }
 
-/* Layout for the Sound/Position/Level selectors */
+/* 5. INPUTS & FORMS */
 .target-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -209,274 +115,54 @@ h1 {
     margin: 15px 0;
 }
 
-.label-text {
-    font-size: 11px;
-    color: #95a5a6;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-/* Cue Chips styling */
-.prompt-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-.chip {
-    padding: 8px 12px;
-    border: 1px solid #1d3557;
-    border-radius: 20px;
-    background: white;
-    color: #1d3557;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.chip.selected {
-    background: #1d3557;
-    color: white;
-}
-
-/* Latest Accuracy Table Styling */
-.goal-card table {
+input, select {
     width: 100%;
-    border-collapse: collapse;
-    background: white;
-}
-
-.goal-card th {
-    background: #f8f9fa;
-    color: #7f8c8d;
-    font-size: 11px;
-    text-transform: uppercase;
     padding: 10px;
-}
-
-.goal-card td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #eee;
-}
-
-/* Stack the sound and level vertically */
-.target-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-}
-
-/* Style the Dropdown */
-#speech-level, #speech-position, #speech-sound {
+    border-radius: 10px;
     border: 1px solid #ecf0f1;
-    border-radius: 15px;
-    padding: 8px 12px;
-    font-size: 13px;
-    color: #7f8c8d;
-    background-color: #fafcfd;
-    outline: none;
-    cursor: pointer;
+    font-size: 16px !important; /* Prevents iOS zoom */
 }
 
-/* Style the inputs */
-.session-info input {
-    border: none;
-    /* Wipes out the default 4-sided black box completely! */
-    border-bottom: 2px solid #ecf0f1;
-    /* A light grey underline */
-    padding: 8px;
-    font-size: 14px;
-    width: 100%;
-    outline: none;
-    background-color: transparent;
-    /* Makes sure the background blends in */
-
-}
-
-.session-info input:focus {
-    border-bottom-color: #a8dadc;
-    /* Changes to Pastel Teal when clicked! */
-}
-
-#speech-level:focus {
-    border-color: #a8dadc;
-    color: #1d5657;
-}
-
-/* The Save Button */
 .save-btn {
+    width: 100%;
     background-color: #1d3557;
     color: white;
-    border: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 12px 25px;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.save-btn:hover {
-    background: #91b1d4;
-}
-
-.save-btn:active {
-    transform: scale(0.95);
-}
-
-/* The History Tabs */
-.history-log {
-    margin-top: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-}
-
-.history-pill {
-    background: #effaff;
-    padding: 8px 15px;
+    padding: 15px;
     border-radius: 15px;
-    font-size: 13px;
-    border: 1px solid #a8dadc;
-    color: #1d3557;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
 }
 
-#search-client {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border: 2px solid #1d3557;
-    /* Dark blue border so it stands out */
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-/* MOBILE OPTIMIZATION */
+/* 6. MOBILE FIXES */
 @media (max-width: 480px) {
-    body {
-        align-items: flex-start; /* Start at the top, don't float in the middle */
-        padding: 0;
-        margin: 0;
-        background-color: #ffffff; /* Match container for a seamless look */
-    }
-
     .container {
-        padding: 15px 10px;
+        margin-top: 55px;
+        border-radius: 0;
         width: 100%;
         box-shadow: none;
     }
-
-    .button-row {
-        flex-direction: row !important; 
-        display: flex;
-        justify-content: space-around;
-        gap: 15px; /* Small enough to fit, big enough to distinguish */
-        margin: 20px 0;
-    }
-
-    .counter-group {
-        flex: 1; /* This forces both buttons to be the exact same width */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
+    
     .btn {
-        /* This makes the circle relative to the screen width */
-        width: 38vw;  
-        height: 38vw; 
-        max-width: 150px; /* Prevents it from getting crazy big on tablets */
-        max-height: 150px;
-        border-radius: 50%;
-        font-size: 60px;    /* Much larger for mobile */
-        font-weight: 900;   /* Extra thick symbols */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        line-height: 0;     /* Helps perfectly center the symbols */
-        padding: 0;
-        margin: 0;
-        touch-action: manipulation;
-
-        /* 2. This removes the grey "flicker" box that appears when you tap */
-        -webkit-tap-highlight-color: transparent;
-
-        /* 3. This stops the phone from trying to "select" the text on the button */
-        user-select: none;
-        -webkit-user-select: none;
-
-    }
-
-    .btn:active {
-    /* 1. The "Squish": Shrinks the button to 92% of its size */
-    transform: scale(0.92);
-    
-    /* 2. The "Depth": Makes the button slightly darker when pressed */
-    filter: brightness(0.85);
-    
-    /* 3. Shadow Change: Makes the shadow look "compressed" */
-    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
-    
-    /* 4. Speed: Makes the "pop back" feel snappy */
-    transition: transform 0.05s ease-in-out;
-    }    
-    
-    #correct-count, #incorrect-count {
-        font-size: 40px;   /* Make the tally numbers huge */
-        margin-top: 15px;
-    }
-
-    .session-info input, 
-    #search-client {
-        width: 100% !important; /* Forces it to stay within the container */
-        box-sizing: border-box;   /* Includes padding in the width calculation */
-        font-size: 16px;          /* Prevents iPhone auto-zoom */
-        margin-bottom: 10px;      /* Adds space between the bar and the button */
-    }
-
-    /* 2. Make the 'Download CSV' button fit nicely below it */
-    #download-csv {
-        width: 100% !important;
-        padding: 15px;
-        font-size: 16px;
-        border-radius: 10px;
-    }
-
-    /* 3. Ensure the search area container doesn't have too much side padding */
-    .session-info {
-        padding: 15px 10px;
-        width: 100%;
-        box-sizing: border-box;
+        width: 35vw;
+        height: 35vw;
     }
 }
 
-/* Ensure the Auth Overlay sits on top of everything including the header */
+/* 7. AUTH & OVERLAYS */
 #auth-overlay {
-    z-index: 10001 !important; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 20000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-#auth-overlay input {
-    font-size: 16px; /* Prevents iPhone from "zooming in" when you tap the box */
-    -webkit-appearance: none;
-    border: 1px solid #d1d1d1;
-}
-
-#auth-overlay h2 {
-    margin-bottom: 20px;
-    font-family: sans-serif;
-}
-
-#login-btn:hover {
-    filter: brightness(1.1);
-    cursor: pointer;
-}
-
-#login-btn:active {
-    transform: scale(0.90); /* Slight "squish" when tapped */
-}
-
+.hidden { display: none !important; }
