@@ -89,15 +89,22 @@ async function saveToCloud(sessionObject) {
 
 // DELETE data from Supabase
 async function deleteFromCloud(id) {
+    // 1. Immediate UI update (makes the app feel snappy)
+    allSessions = allSessions.filter(s => s.id !== id);
+    redrawPills();
+
+    // 2. Delete from the Cloud
     const { error } = await db
         .from('sessions')
         .delete()
         .eq('id', id);
 
-    if (error) console.error('Delete error:', error);
-    else loadHistory();
+    if (error) {
+        console.error('Delete error:', error);
+        alert("Could not delete from cloud: " + error.message);
+        loadHistory(); // Reload from cloud to restore the pill if delete failed
+    }
 }
-
 // 4. CORE APP LOGIC
 
 function updateAccuracy() {
@@ -141,8 +148,11 @@ function redrawPills() {
                     </span>
                 </div>
             </div>
-            <span class="delete-btn" onclick="deleteFromCloud('${session.id}')" 
-                  style="cursor: pointer; position: absolute; top: 10px; right: 10px; color: #e63946; font-size: 22px; line-height: 1; padding: 5px 8px;">&times;</span>
+            <span class="delete-btn" 
+                onclick="deleteFromCloud('${session.id}')" 
+                style="cursor: pointer; position: absolute; top: 10px; right: 10px; color: #e63946; font-size: 22px; line-height: 1; padding: 5px 8px;">
+                  &times;
+            </span>
         `;
         historyLog.appendChild(pill);
     });
