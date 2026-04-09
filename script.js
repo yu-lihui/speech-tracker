@@ -268,7 +268,7 @@ saveBtn.addEventListener('click', async () => {
 
     const newSession = {
         client_name: clientInput.value || "Unknown",
-        sound: `${soundVal} ${positionVal} Concepts`.trim(),
+        sound: `${soundVal} ${positionVal}.trim(),
         level: levelInput.value,
         prompt: getSelectedCues(),
         correct: correctCount,
