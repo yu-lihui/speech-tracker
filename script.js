@@ -7,6 +7,32 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 // We use 'db' here to keep it distinct and easy for the functions to find
 const db = createClient(supabaseUrl, supabaseKey);
 
+// --- NEW: AUTHENTICATION LOGIC ---
+async function checkUser() {
+    const { data: { user } } = await db.auth.getUser();
+    if (user) {
+        document.getElementById('auth-overlay').style.display = 'none';
+        loadHistory(); // Only load history if we are logged in
+    }
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+
+    const { error } = await db.auth.signInWithPassword({ email, password });
+
+    if (error) {
+        alert("Login failed: " + error.message);
+    } else {
+        document.getElementById('auth-overlay').style.display = 'none';
+        loadHistory();
+    }
+});
+
+// Run this check immediately
+checkUser();
+
 // 1. Memory Buckets
 let correctCount = 0;
 let incorrectCount = 0;
@@ -237,6 +263,3 @@ function getSelectedCues() {
     const selected = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.getAttribute('data-value'));
     return selected.length > 0 ? selected.join(', ') : 'Indpt';
 }
-
-// 6. INITIALIZE
-loadHistory();
