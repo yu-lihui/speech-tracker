@@ -28,24 +28,29 @@ h1 {
 }
 
 .container {
-    display: flex;
+    display: block;
+    margin-top: 50px !important; /* Matches header height */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100%;
+    max-width: 600px; /* Keeps it looking like a phone app even on desktop */
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 500px; /* Keeps it looking like a phone app even on desktop */
-    margin: 0 auto;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
     background: white;
-    padding: 10px;
+    box-sizing: border-box;
+    padding: 15px;
     border-radius: 30px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    margin-top: 50px !important; /* Matches header height */
+    position: relative; /* Removes it from any fixed/absolute overlap */
+    
 }
 
 /* Navigation Menu Styles */
 .nav-menu {
+    position: sticky;
+    top: 50px; /* If the menu is sticky, it stays below the header */
+    z-index: 999;
     display: flex;
     justify-content: center;
     gap: 10px;
