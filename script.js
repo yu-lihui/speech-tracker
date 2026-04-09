@@ -17,6 +17,10 @@ async function checkUser() {
         if (authOverlay) authOverlay.style.display = 'none';
         if (header) header.style.display = 'flex'; // Reveal header
         document.getElementById('user-display-email').textContent = user.email;
+
+        // NEW: Scroll to top so the Client Name box is visible
+        window.scrollTo(0, 0);
+        
         loadHistory();
     } else {
         if (authOverlay) authOverlay.style.display = 'flex';
@@ -58,6 +62,9 @@ document.getElementById('login-btn').addEventListener('click', async () => {
         // Success!
         document.getElementById('auth-overlay').style.display = 'none';
         document.getElementById('account-header').style.display = 'flex'; // Show the header!
+
+        // NEW: Scroll to top immediately after login
+        window.scrollTo(0, 0);
         
         const { data: { user } } = await db.auth.getUser();
         document.getElementById('user-display-email').textContent = user.email;
