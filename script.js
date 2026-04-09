@@ -12,7 +12,9 @@ async function checkUser() {
     const { data: { user } } = await db.auth.getUser();
     if (user) {
         document.getElementById('auth-overlay').style.display = 'none';
-        loadHistory(); // Only load history if we are logged in
+        // NEW: Show the email in the header
+        document.getElementById('user-display-email').textContent = user.email;
+        loadHistory();
     }
 }
 // Handle Sign Up Click
@@ -46,7 +48,14 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     if (error) {
         alert("Login failed: " + error.message);
     } else {
+        // 1. Hide the white login screen
         document.getElementById('auth-overlay').style.display = 'none';
+        
+        // 2. NEW: Get the user info and update the top header text
+        const { data: { user } } = await db.auth.getUser();
+        document.getElementById('user-display-email').textContent = user.email;
+        
+        // 3. Finally, pull the data from the cloud
         loadHistory();
     }
 });
@@ -310,13 +319,12 @@ function getSelectedCues() {
     return selected.length > 0 ? selected.join(', ') : 'Indpt';
 }
 
-// Logout Logic
-document.getElementById('logout-btn').addEventListener('click', async () => {
-    const { error } = await db.auth.signOut();
-    if (error) {
-        alert("Error logging out: " + error.message);
-    } else {
-        // Refresh the page to bring back the login overlay
-        window.location.reload();
+// Logout Logic for the top header button
+document.getElementById('header-logout-btn').addEventListener('click', async () => {
+    const confirmLogout = confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+        const { error } = await db.auth.signOut();
+        if (error) alert(error.message);
+        else window.location.reload();
     }
 });
