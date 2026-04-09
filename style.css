@@ -32,6 +32,20 @@ body {
     /* ... rest of your existing header styles ... */
 }
 
+.logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Space between logo and Email input */
+}
+
+.logo-img {
+    height: 80px;      /* Adjust this height to your liking */
+    width: auto;
+    max-width: 80%;    /* Ensures it doesn't hit the screen edges */
+    object-fit: contain;
+}
+
 /* --- LOGIN SCREEN BUTTONS --- */
 .auth-btn, #signup-btn {
     width: 80%;
@@ -283,6 +297,10 @@ h1 {
     .nav-btn {
         padding: 8px 12px;
         font-size: 13px;
+    }
+
+    .logo-img {
+        height: 65px;  /* Slightly smaller for smaller iPhones */
     }
 }
 
