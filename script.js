@@ -12,11 +12,16 @@ async function checkUser() {
     const { data: { user } } = await db.auth.getUser();
     if (user) {
         document.getElementById('auth-overlay').style.display = 'none';
-        // NEW: Show the email in the header
+        // REVEAL the header
+        document.getElementById('account-header').style.display = 'flex'; 
         document.getElementById('user-display-email').textContent = user.email;
         loadHistory();
+    } else {
+        // ENSURE it stays hidden if no user
+        document.getElementById('account-header').style.display = 'none';
     }
 }
+
 // Handle Sign Up Click
 document.getElementById('signup-btn').addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
@@ -40,22 +45,17 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
 });
 
 document.getElementById('login-btn').addEventListener('click', async () => {
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
-
-    const { error } = await db.auth.signInWithPassword({ email, password });
-
+    // ... your existing login code ...
     if (error) {
         alert("Login failed: " + error.message);
     } else {
-        // 1. Hide the white login screen
         document.getElementById('auth-overlay').style.display = 'none';
         
-        // 2. NEW: Get the user info and update the top header text
+        // REVEAL the header now that we are logged in
+        document.getElementById('account-header').style.display = 'flex'; 
+        
         const { data: { user } } = await db.auth.getUser();
         document.getElementById('user-display-email').textContent = user.email;
-        
-        // 3. Finally, pull the data from the cloud
         loadHistory();
     }
 });
