@@ -1,11 +1,14 @@
-// 1. Create the 'Memory Buckets' (Variables)
+// Initialize Supabase
+const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1leXBpdm1jY3lra3F0YXpjcm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MTk0MzYsImV4cCI6MjA5MTI5NTQzNn0.AZszBKbiqIVq5A3vFSzB-uZDRE6bGSZYTcAg0xKVTv4';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// 1. Memory Buckets
 let correctCount = 0;
 let incorrectCount = 0;
+let allSessions = []; 
 
-// invisible Excel spreadsheet
-let allSessions = [];
-
-// 2. Find the HTML elements so we can change them
+// 2. HTML Element Selectors
 const percentageDisplay = document.querySelector('.percentage');
 const btnCorrect = document.querySelector('.correct');
 const btnIncorrect = document.querySelector('.incorrect');
@@ -13,82 +16,90 @@ const correctDisplay = document.querySelector('#correct-count');
 const incorrectDisplay = document.querySelector('#incorrect-count');
 const btnReset = document.querySelector('#reset-btn');
 const searchInput = document.querySelector('#search-client');
-
-// Session Details tools
 const saveBtn = document.querySelector('#save-btn');
 const historyLog = document.querySelector('#history-log');
 const clientInput = document.querySelector('#client-name');
 const soundInput = document.querySelector('#speech-sound');
 const levelInput = document.querySelector('#speech-level');
-
-// Navigation tools
 const navTracker = document.querySelector('#nav-tracker');
 const navDashboard = document.querySelector('#nav-dashboard');
 const trackerView = document.querySelector('#tracker-view');
 const dashboardView = document.querySelector('#dashboard-view');
 
-// 3. Create a Function to update the display
-function updateAccuracy() {
-    // STEP 1: CALCULATE (The "Brain Work")
-    let total = correctCount + incorrectCount;
-    let accuracy = 0;
+// 3. CLOUD FUNCTIONS
 
-    if (total > 0) {
-        accuracy = Math.round((correctCount / total) * 100);
-    }
+// Load data from Supabase
+async function loadHistory() {
+    const { data, error } = await supabase
+        .from('sessions')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    // STEP 2: DISPLAY (The "Visual Work")
-    // Put these at the bottom so they have the newest math!
-    percentageDisplay.textContent = accuracy + "%";
-    correctDisplay.textContent = correctCount;
-    incorrectDisplay.textContent = incorrectCount;
-}
-
-//3. Recipes (create functions)
-// Create a function to reset the display
-function resetAll() {
-    correctCount = 0; // Reset the "let" memory
-    incorrectCount = 0;
-    updateAccuracy(); // Run the other function to fix the screen
-}
-
-function saveHistory() {
-    // 1. JSON.stringify translates our Excel Sheet into a flat string of text
-    // 2. We put that text into the localStorage warehouse
-    localStorage.setItem('mySpeechSessions', JSON.stringify(allSessions));
-}
-
-function loadHistory() {
-    // 1. Pull the text out of the warehouse
-    const savedData = localStorage.getItem('mySpeechSessions');
-
-    if (savedData) {
-        // 2. JSON.parse translates the text BACK into a live Excel Sheet!
-        allSessions = JSON.parse(savedData);
-        // 3. Tell the artist to paint the screen
+    if (error) {
+        console.error('Error loading cloud data:', error);
+    } else {
+        allSessions = data;
         redrawPills();
     }
 }
 
-function redrawPills() {
-    // 1. Wipe the screen clean
-    historyLog.innerHTML = "";
+// Save data to Supabase
+async function saveToCloud(sessionObject) {
+    const { error } = await supabase
+        .from('sessions')
+        .insert([sessionObject]);
 
-    // 2. Loop through sessions (Latest on top)
-    [...allSessions].reverse().forEach((session, originalIndex) => {
-        const index = allSessions.length - 1 - originalIndex;
+    if (error) {
+        console.error('Cloud Save Error:', error);
+        alert("Failed to save to cloud.");
+    } else {
+        loadHistory(); // Refresh the list immediately
+    }
+}
+
+// Delete data from Supabase
+async function deleteFromCloud(id) {
+    const { error } = await supabase
+        .from('sessions')
+        .delete()
+        .eq('id', id);
+
+    if (error) console.error('Delete error:', error);
+    else loadHistory();
+}
+
+// 4. CORE APP LOGIC
+
+function updateAccuracy() {
+    let total = correctCount + incorrectCount;
+    let accuracy = (total > 0) ? Math.round((correctCount / total) * 100) : 0;
+
+    percentageDisplay.textContent = accuracy + "%";
+    correctDisplay.textContent = correctCount;
+    incorrectDisplay.textContent = incorrectCount;
+    return accuracy;
+}
+
+function resetAll() {
+    correctCount = 0;
+    incorrectCount = 0;
+    updateAccuracy();
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+}
+
+function redrawPills() {
+    historyLog.innerHTML = "";
+    allSessions.forEach((session) => {
         const pill = document.createElement('div');
         pill.classList.add('history-pill');
-        
-        // Consistent spacing and "no-text" zone for the X
         pill.style.cssText = "border: 1px solid #1d3557; margin-bottom: 10px; padding: 12px; padding-right: 40px; border-radius: 8px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
 
-        const displayDate = new Date(session.date).toLocaleDateString('en-GB');
+        const displayDate = new Date(session.created_at).toLocaleDateString('en-GB');
 
         pill.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="flex: 1;">
-                    <strong style="color: #1d3557; font-size: 14px;">${session.name}</strong>: ${session.sound}
+                    <strong style="color: #1d3557; font-size: 14px;">${session.client_name}</strong>: ${session.sound}
                     <div style="font-size: 11px; color: #7f8c8d; margin-top: 2px;">
                         ${session.level} | Cues: ${session.prompt}
                     </div>
@@ -100,212 +111,25 @@ function redrawPills() {
                     </span>
                 </div>
             </div>
-            <span class="delete-btn" data-index="${index}" 
+            <span class="delete-btn" onclick="deleteFromCloud('${session.id}')" 
                   style="cursor: pointer; position: absolute; top: 10px; right: 10px; color: #e63946; font-size: 22px; line-height: 1; padding: 5px 8px;">&times;</span>
         `;
-
         historyLog.appendChild(pill);
     });
 }
 
-function showClientProgress(searchTerm) {
-    const resultsContainer = document.querySelector('#client-history-results');
-    resultsContainer.innerHTML = ""; // Clear the room first
-
-    // 1. THE FILTER: Only grab sessions that match the name typed
-    const filteredSessions = allSessions.filter(session =>
-        session.name.toLowerCase() === searchTerm.toLowerCase()
-    );
-
-    if (filteredSessions.length === 0) {
-        resultsContainer.innerHTML = `<p style="text-align:center; color:#95a5a6;">No sessions found for "${searchTerm}".</p>`;
-        return;
-    }
-
-    filteredSessions.forEach(session => {
-        const report = document.createElement('div');
-        report.classList.add('history-pill');
-        // We make these blue-ish to look different from the main tracker
-        report.style.borderLeft = "5px solid #1d3557";
-
-        report.innerHTML = `
-            <strong>${session.date}</strong><br>
-            Target: ${session.sound} (${session.level})<br>
-            <strong>Accuracy: ${session.accuracy}</strong>
-        `;
-        resultsContainer.appendChild(report);
-    });
-
-}
-
-function showAllGoalProgress(clientSessions) {
-    const container = document.querySelector('#all-goals-container');
-    container.innerHTML = ""; // Clear old bars
-
-    if (clientSessions.length === 0) return;
-
-    container.style.display = "block"; // Only "turn on" the lights when we have data!
-    container.innerHTML = "";
-
-    // 1. GROUPING: Create a list of unique goals (e.g., "/k/ Word", "/k/ Phrase")
-    const goals = {};
-
-    clientSessions.forEach(s => {
-        const goalKey = `${s.sound} (${s.level})`; // e.g. "/k/ (Word)"
-        if (!goals[goalKey]) {
-            goals[goalKey] = { totalAccuracy: 0, count: 0 };
-        }
-        goals[goalKey].totalAccuracy += parseInt(s.accuracy);
-        goals[goalKey].count += 1;
-    });
-
-    // 2. PAINTING: Create a bar for every unique goal found
-    Object.keys(goals).forEach(goalName => {
-        const data = goals[goalName];
-        const avg = Math.round(data.totalAccuracy / data.count);
-
-        const goalDiv = document.createElement('div');
-        goalDiv.style.marginBottom = "15px";
-        goalDiv.style.padding = "10px";
-        goalDiv.style.background = "#f8f9fa";
-        goalDiv.style.borderRadius = "8px";
-
-        goalDiv.innerHTML = `
-            <p style="margin-bottom: 5px; font-weight: bold; font-size: 14px;">
-                ${goalName}: <span style="color: #1d3557;">${avg}% Avg</span>
-            </p>
-            <div style="width: 100%; background: #e9ecef; border-radius: 10px; height: 12px;">
-                <div style="width: ${avg}%; height: 100%; background: #457b9d; border-radius: 10px; transition: width 0.8s ease;"></div>
-            </div>
-        `;
-        container.appendChild(goalDiv);
-    });
-}
-
-function downloadCSV() {
-    const searchTerm = document.querySelector('#search-client').value;
-    const sessionsToExport = allSessions.filter(s =>
-        s.name.toLowerCase() === searchTerm.toLowerCase()
-    );
-
-    if (sessionsToExport.length === 0) return alert("No data to download!");
-
-    // Create the CSV Header
-    let csvContent = "Date,Client,Sound,Level,Accuracy\n";
-
-    // Add each row
-    sessionsToExport.forEach(s => {
-        csvContent += `${s.date},${s.name},${s.sound},${s.level},${s.accuracy}\n`;
-    });
-
-    // Create a hidden "download link" and click it automatically
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `${searchTerm}_Progress_Report.csv`);
-    a.click();
-}
-
-// 4. Tell the buttons to listen for clicks
-btnCorrect.addEventListener('click', () => {
-    correctCount++;
-    updateAccuracy();
-});
-
-btnIncorrect.addEventListener('click', () => {
-    incorrectCount++;
-    updateAccuracy();
-});
-
-btnReset.addEventListener('click', () => {
-    resetAll();
-    // Clear the selected chips
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-});
-
-saveBtn.addEventListener('click', () => {
-    const clientName = document.getElementById('client-name').value || "Unknown";
-    const soundVal = document.getElementById('speech-sound').value || "General";
-    const positionVal = document.getElementById('speech-position').value || "";
-
-    // Calculate accuracy number right here
-    const total = correctCount + incorrectCount;
-    const finalAccuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-
-    const newSession = {
-        name: clientName,
-        sound: `${soundVal} ${positionVal}`.trim(),
-        level: document.getElementById('speech-level').value,
-        prompt: getSelectedCues(),
-        correct: correctCount,
-        incorrect: incorrectCount,
-        accuracy: finalAccuracy,
-        date: new Date().toISOString()
-    };
-
-    allSessions.push(newSession);
-    saveHistory();
-    redrawPills();
-
-    alert(`Session saved for ${clientName}!`);
-    btnReset.click();
-});
-
-// JSON Master Delete Listener
-historyLog.addEventListener('click', (event) => {
-    if (event.target.classList.contains('delete-btn')) {
-        const rowIndex = event.target.getAttribute('data-index');
-        allSessions.splice(rowIndex, 1);
-        saveHistory();
-        redrawPills();
-    }
-});
-
-// Search trigger - Updated to use the new Table Layout
-searchInput.addEventListener('input', () => {
-    const term = searchInput.value.trim();
-    if (term.length > 0) {
-        displayClientHistory(term);
-    } else {
-        document.getElementById('all-goals-container').innerHTML = "";
-        document.getElementById('client-history-results').innerHTML =
-            `<p style="text-align:center; color:#95a5a6;">Search for a client to see their progress history.</p>`;
-    }
-});
-
-// Helper to grab selected cues
-function getSelectedCues() {
-    const selected = Array.from(document.querySelectorAll('.chip.selected'))
-        .map(c => c.getAttribute('data-value'));
-    return selected.length > 0 ? selected.join(', ') : 'Indpt';
-}
-
-// Chip Toggle Logic
-document.getElementById('prompt-chips').addEventListener('click', (e) => {
-    if (e.target.classList.contains('chip')) {
-        e.target.classList.toggle('selected');
-    }
-});
-
-// THE NEW PROGRESS VIEWER: Groups by sound and shows latest at top
 function displayClientHistory(clientName) {
     const container = document.getElementById('all-goals-container');
     const messageArea = document.getElementById('client-history-results');
-
-    // Filter all sessions for this specific child
-    const clientData = allSessions.filter(h => h.name.toLowerCase() === clientName.toLowerCase());
+    const clientData = allSessions.filter(h => h.client_name.toLowerCase() === clientName.toLowerCase());
 
     container.innerHTML = '';
-
     if (clientData.length === 0) {
         messageArea.innerHTML = `<p style="text-align:center; color:#95a5a6;">No sessions found for "${clientName}".</p>`;
         return;
-    } else {
-        messageArea.innerHTML = ""; // Clear the search message
-    }
+    } 
+    messageArea.innerHTML = "";
 
-    // Group by Target Sound
     const groups = {};
     clientData.forEach(entry => {
         if (!groups[entry.sound]) groups[entry.sound] = [];
@@ -318,7 +142,7 @@ function displayClientHistory(clientName) {
         card.style.cssText = "margin-bottom:20px; border:1px solid #1d3557; border-radius:10px; overflow:hidden; background:white;";
 
         let rows = groups[sound]
-            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Latest at top
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             .map(entry => `
                 <tr style="border-bottom: 1px solid #eee;">
                     <td style="padding:10px;">${entry.level}</td>
@@ -326,7 +150,7 @@ function displayClientHistory(clientName) {
                     <td style="padding:10px; text-align:center; font-weight:bold; color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
                         ${entry.accuracy}%
                     </td>
-                    <td style="padding:10px; text-align:right; font-size:10px; color:#bdc3c7;">${new Date(entry.date).toLocaleDateString('en-GB')}</td>
+                    <td style="padding:10px; text-align:right; font-size:10px; color:#bdc3c7;">${new Date(entry.created_at).toLocaleDateString('en-GB')}</td>
                 </tr>
             `).join('');
 
@@ -347,15 +171,51 @@ function displayClientHistory(clientName) {
     }
 }
 
-// Download button trigger
-document.querySelector('#download-csv').addEventListener('click', downloadCSV);
+// 5. EVENT LISTENERS
 
-// NAVIGATION LOGIC
+btnCorrect.addEventListener('click', () => { correctCount++; updateAccuracy(); });
+btnIncorrect.addEventListener('click', () => { incorrectCount++; updateAccuracy(); });
+btnReset.addEventListener('click', resetAll);
+
+saveBtn.addEventListener('click', async () => {
+    const currentAccuracy = updateAccuracy();
+    const soundVal = soundInput.value || "General";
+    const positionVal = document.getElementById('speech-position').value || "";
+
+    const newSession = {
+        client_name: clientInput.value || "Unknown",
+        sound: `${soundVal} ${positionVal}`.trim(),
+        level: levelInput.value,
+        prompt: getSelectedCues(),
+        correct: correctCount,
+        incorrect: incorrectCount,
+        accuracy: currentAccuracy
+    };
+
+    await saveToCloud(newSession);
+    alert(`Session saved!`);
+    resetAll();
+});
+
+searchInput.addEventListener('input', () => {
+    const term = searchInput.value.trim();
+    if (term.length > 0) displayClientHistory(term);
+    else {
+        document.getElementById('all-goals-container').innerHTML = "";
+        document.getElementById('client-history-results').innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see progress history.</p>`;
+    }
+});
+
 navTracker.addEventListener('click', () => {
     navTracker.classList.add('active');
     navDashboard.classList.remove('active');
     trackerView.classList.remove('hidden');
     dashboardView.classList.add('hidden');
+
+    // PRIVACY WIPE: Clear history when leaving the dashboard
+    document.getElementById('all-goals-container').innerHTML = "";
+    document.getElementById('search-client').value = "";
+    document.getElementById('client-history-results').innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see progress history.</p>`;
 });
 
 navDashboard.addEventListener('click', () => {
@@ -365,5 +225,14 @@ navDashboard.addEventListener('click', () => {
     trackerView.classList.add('hidden');
 });
 
-// KICKSTART THE APP
+document.getElementById('prompt-chips').addEventListener('click', (e) => {
+    if (e.target.classList.contains('chip')) e.target.classList.toggle('selected');
+});
+
+function getSelectedCues() {
+    const selected = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.getAttribute('data-value'));
+    return selected.length > 0 ? selected.join(', ') : 'Indpt';
+}
+
+// 6. INITIALIZE
 loadHistory();
