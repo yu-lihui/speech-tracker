@@ -25,26 +25,41 @@ body {
     text-align: center;
 }
 
-/* Specific styling for the Login/Signup screen buttons */
+/* --- LOGIN SCREEN BUTTONS --- */
+.auth-btn, #signup-btn {
+    width: 80%;
+    max-width: 350px;
+    height: 50px;            /* Forces both to be exactly the same height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.2s;
+    box-sizing: border-box; /* Includes border in the 50px height */
+    padding: 0;             /* Remove padding since we use fixed height */
+}
+
+/* Specifics for Login */
 .auth-btn {
     background-color: #1d3557;
     color: white;
     border: none;
-    padding: 12px;           /* Normal height for a login button */
-    border-radius: 8px;      /* Slightly less rounded for a cleaner look */
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 80%;
-    max-width: 350px;
-    transition: background 0.2s;
 }
 
-.auth-btn:active {
-    transform: scale(0.98);
-    filter: brightness(1.1);
+/* Specifics for Signup */
+#signup-btn {
+    background-color: white;
+    color: #1d3557;
+    border: 2px solid #1d3557; /* Matches the login color */
 }
 
+.auth-btn:active, #signup-btn:active {
+    transform: scale(0.97);
+}
 /* 3. NAVIGATION MENU */
 .nav-menu {
     position: sticky;
