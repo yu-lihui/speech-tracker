@@ -47,6 +47,15 @@ body {
 }
 
 /* --- LOGIN SCREEN BUTTONS --- */
+/* Specific sizing for the Login Page Logo */
+#auth-overlay .logo-img {
+    height: 120px;       /* Increased from 80px */
+    width: auto;
+    max-width: 85%;      /* Allows it to be wider on the screen */
+    margin-bottom: 30px; /* More breathing room before the Email box */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); /* Optional: subtle shadow to make it pop */
+}
+
 .auth-btn, #signup-btn {
     width: 80%;
     max-width: 350px;
@@ -301,6 +310,11 @@ h1 {
 
     .logo-img {
         height: 65px;  /* Slightly smaller for smaller iPhones */
+    }
+
+    #auth-overlay .logo-img {
+        height: 100px;   /* Slightly smaller for iPhone SE/mini but still "Big" */
+        margin-bottom: 20px;
     }
 }
 
