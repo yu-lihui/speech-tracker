@@ -393,6 +393,20 @@ h1 {
 
     }
 
+    .btn:active {
+    /* 1. The "Squish": Shrinks the button to 92% of its size */
+    transform: scale(0.92);
+    
+    /* 2. The "Depth": Makes the button slightly darker when pressed */
+    filter: brightness(0.85);
+    
+    /* 3. Shadow Change: Makes the shadow look "compressed" */
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+    
+    /* 4. Speed: Makes the "pop back" feel snappy */
+    transition: transform 0.05s ease-in-out;
+    }    
+    
     #correct-count, #incorrect-count {
         font-size: 40px;   /* Make the tally numbers huge */
         margin-top: 15px;
@@ -439,6 +453,6 @@ h1 {
 }
 
 #login-btn:active {
-    transform: scale(0.98); /* Slight "squish" when tapped */
+    transform: scale(0.90); /* Slight "squish" when tapped */
 }
 
