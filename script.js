@@ -4,7 +4,8 @@ const { createClient } = supabase; // This grabs the tool from the script tag
 const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1leXBpdm1jY3lra3F0YXpjcm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MTk0MzYsImV4cCI6MjA5MTI5NTQzNn0.AZszBKbiqIVq5A3vFSzB-uZDRE6bGSZYTcAg0xKVTv4';
 
-const _supabase = createClient(supabaseUrl, supabaseKey);
+// We use 'db' here to keep it distinct and easy for the functions to find
+const db = createClient(supabaseUrl, supabaseKey);
 
 // 1. Memory Buckets
 let correctCount = 0;
@@ -31,9 +32,9 @@ const dashboardView = document.querySelector('#dashboard-view');
 
 // 3. CLOUD FUNCTIONS
 
-// Load data from Supabase
+// LOAD data from Supabase
 async function loadHistory() {
-    const { data, error } = await supabase
+    const { data, error } = await db
         .from('sessions')
         .select('*')
         .order('created_at', { ascending: false });
@@ -46,23 +47,23 @@ async function loadHistory() {
     }
 }
 
-// Save data to Supabase
+// SAVE data to Supabase
 async function saveToCloud(sessionObject) {
-    const { error } = await supabase
+    const { error } = await db
         .from('sessions')
         .insert([sessionObject]);
 
     if (error) {
         console.error('Cloud Save Error:', error);
-        alert("Failed to save to cloud.");
+        alert("Failed to save to cloud. Check if your column names match!");
     } else {
-        loadHistory(); // Refresh the list immediately
+        loadHistory(); 
     }
 }
 
-// Delete data from Supabase
+// DELETE data from Supabase
 async function deleteFromCloud(id) {
-    const { error } = await supabase
+    const { error } = await db
         .from('sessions')
         .delete()
         .eq('id', id);
