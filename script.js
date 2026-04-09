@@ -10,15 +10,17 @@ const db = createClient(supabaseUrl, supabaseKey);
 // --- NEW: AUTHENTICATION LOGIC ---
 async function checkUser() {
     const { data: { user } } = await db.auth.getUser();
+    const header = document.getElementById('account-header');
+    const authOverlay = document.getElementById('auth-overlay');
+
     if (user) {
-        document.getElementById('auth-overlay').style.display = 'none';
-        // REVEAL the header
-        document.getElementById('account-header').style.display = 'flex'; 
+        if (authOverlay) authOverlay.style.display = 'none';
+        if (header) header.style.display = 'flex'; // Reveal header
         document.getElementById('user-display-email').textContent = user.email;
         loadHistory();
     } else {
-        // ENSURE it stays hidden if no user
-        document.getElementById('account-header').style.display = 'none';
+        if (authOverlay) authOverlay.style.display = 'flex';
+        if (header) header.style.display = 'none'; // Keep hidden
     }
 }
 
@@ -45,14 +47,17 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
 });
 
 document.getElementById('login-btn').addEventListener('click', async () => {
-    // ... your existing login code ...
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+
+    const { error } = await db.auth.signInWithPassword({ email, password });
+
     if (error) {
         alert("Login failed: " + error.message);
     } else {
+        // Success!
         document.getElementById('auth-overlay').style.display = 'none';
-        
-        // REVEAL the header now that we are logged in
-        document.getElementById('account-header').style.display = 'flex'; 
+        document.getElementById('account-header').style.display = 'flex'; // Show the header!
         
         const { data: { user } } = await db.auth.getUser();
         document.getElementById('user-display-email').textContent = user.email;
