@@ -156,6 +156,12 @@ h1 {
     text-align: left;
 }
 
+.chip.selected {
+    background-color: #1d3557 !important;
+    color: white !important;
+    border-color: #1d3557 !important;
+}
+
 /* 6. MOBILE OVERRIDES - The Friendly Version */
 @media (max-width: 480px) {
     body { background-color: #ffffff; }
