@@ -34,6 +34,7 @@ h1 {
     padding: 40px;
     border-radius: 30px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    margin-top: 50px; /* This creates space for the header */
 }
 
 /* Navigation Menu Styles */
@@ -434,6 +435,11 @@ h1 {
         width: 100%;
         box-sizing: border-box;
     }
+}
+
+/* Ensure the Auth Overlay sits on top of everything including the header */
+#auth-overlay {
+    z-index: 10001 !important; 
 }
 
 #auth-overlay input {
