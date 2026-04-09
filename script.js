@@ -81,13 +81,18 @@ const dashboardView = document.querySelector('#dashboard-view');
 
 // LOAD data from Supabase
 async function loadHistory() {
+    const { data: { user } } = await db.auth.getUser();
+    
+    if (!user) return;
+
     const { data, error } = await db
         .from('sessions')
         .select('*')
+        .eq('user_id', user.id) // <--- ONLY LOAD MY DATA
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Error loading cloud data:', error);
+        console.error('Error loading:', error);
     } else {
         allSessions = data;
         redrawPills();
@@ -239,18 +244,28 @@ btnIncorrect.addEventListener('click', () => { incorrectCount++; updateAccuracy(
 btnReset.addEventListener('click', resetAll);
 
 saveBtn.addEventListener('click', async () => {
+    // Get the current logged-in user
+    const { data: { user } } = await db.auth.getUser();
+    
+    if (!user) {
+        alert("Session expired. Please log in again.");
+        window.location.reload();
+        return;
+    }
+
     const currentAccuracy = updateAccuracy();
     const soundVal = soundInput.value || "General";
     const positionVal = document.getElementById('speech-position').value || "";
 
     const newSession = {
         client_name: clientInput.value || "Unknown",
-        sound: `${soundVal} ${positionVal}`.trim(),
+        sound: `${soundVal} ${positionVal} Concepts`.trim(),
         level: levelInput.value,
         prompt: getSelectedCues(),
         correct: correctCount,
         incorrect: incorrectCount,
-        accuracy: currentAccuracy
+        accuracy: currentAccuracy,
+        user_id: user.id // <--- THIS LINKS THE DATA TO YOU
     };
 
     await saveToCloud(newSession);
