@@ -15,6 +15,27 @@ async function checkUser() {
         loadHistory(); // Only load history if we are logged in
     }
 }
+// Handle Sign Up Click
+document.getElementById('signup-btn').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+    }
+
+    const { data, error } = await db.auth.signUp({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        alert("Sign up error: " + error.message);
+    } else {
+        alert("Account created! You can now log in.");
+    }
+});
 
 document.getElementById('login-btn').addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
