@@ -25,6 +25,13 @@ body {
     text-align: center;
 }
 
+#account-header {
+    display: none; /* <--- Add this line */
+    position: fixed;
+    top: 0;
+    /* ... rest of your existing header styles ... */
+}
+
 /* --- LOGIN SCREEN BUTTONS --- */
 .auth-btn, #signup-btn {
     width: 80%;
