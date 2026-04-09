@@ -310,13 +310,30 @@ navDashboard.addEventListener('click', () => {
     trackerView.classList.add('hidden');
 });
 
+// --- CUE CHIPS LOGIC ---
 document.getElementById('prompt-chips').addEventListener('click', (e) => {
-    if (e.target.classList.contains('chip')) e.target.classList.toggle('selected');
+    // Check if what was clicked is actually a chip button
+    if (e.target.classList.contains('chip')) {
+        // Toggle the 'selected' class (changes color)
+        e.target.classList.toggle('selected');
+        
+        // Optional: If 'Independent' is selected, deselect others
+        if (e.target.getAttribute('data-value') === 'Indpt' && e.target.classList.contains('selected')) {
+            const allChips = document.querySelectorAll('.chip');
+            allChips.forEach(chip => {
+                if (chip.getAttribute('data-value') !== 'Indpt') {
+                    chip.classList.remove('selected');
+                }
+            });
+        }
+    }
 });
 
+// Helper function to see which chips are selected when saving
 function getSelectedCues() {
-    const selected = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.getAttribute('data-value'));
-    return selected.length > 0 ? selected.join(', ') : 'Indpt';
+    const selected = Array.from(document.querySelectorAll('.chip.selected'))
+        .map(chip => chip.getAttribute('data-value'));
+    return selected.length > 0 ? selected.join(', ') : 'None';
 }
 
 // Logout Logic for the top header button
