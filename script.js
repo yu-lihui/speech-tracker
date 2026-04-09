@@ -1,8 +1,8 @@
 // Initialize Supabase correctly for browser use
 const { createClient } = supabase; // This grabs the tool from the script tag
 
-const supabaseUrl = 'https://your-project-url.supabase.co';
-const supabaseKey = 'eyJ-your-anon-key-here...';
+const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1leXBpdm1jY3lra3F0YXpjcm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MTk0MzYsImV4cCI6MjA5MTI5NTQzNn0.AZszBKbiqIVq5A3vFSzB-uZDRE6bGSZYTcAg0xKVTv4';
 
 const _supabase = createClient(supabaseUrl, supabaseKey);
 
