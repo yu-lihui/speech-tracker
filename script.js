@@ -263,3 +263,14 @@ function getSelectedCues() {
     const selected = Array.from(document.querySelectorAll('.chip.selected')).map(c => c.getAttribute('data-value'));
     return selected.length > 0 ? selected.join(', ') : 'Indpt';
 }
+
+// Logout Logic
+document.getElementById('logout-btn').addEventListener('click', async () => {
+    const { error } = await db.auth.signOut();
+    if (error) {
+        alert("Error logging out: " + error.message);
+    } else {
+        // Refresh the page to bring back the login overlay
+        window.location.reload();
+    }
+});
