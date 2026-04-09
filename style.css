@@ -27,11 +27,16 @@ h1 {
     box-sizing: border-box;
 }
 
+/* Update your tracker view to start lower down */
+#tracker-view {
+    padding-top: 20px; /* Adjust this number if it still looks too close */
+
 .container {
     display: block;
     margin-top: 50px !important; /* Matches header height */
     margin-left: auto !important;
     margin-right: auto !important;
+    padding-top: 10px; /* Extra breathing room */
     width: 100%;
     max-width: 500px; /* Keeps it looking like a phone app even on desktop */
     flex-direction: column;
@@ -50,11 +55,12 @@ h1 {
 .nav-menu {
     position: sticky;
     top: 50px; /* If the menu is sticky, it stays below the header */
+    background-color: white; /* Prevents text from overlapping during scroll */
     z-index: 999;
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 30px !important; /* Forces the inputs further down */
     border-bottom: 2px solid #ecf0f1;
     padding-bottom: 15px;
 }
