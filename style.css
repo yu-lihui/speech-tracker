@@ -187,7 +187,7 @@ h1 {
     }
 }
 
-/* 7. AUTH & UTILS */
+/* 7. AUTH & OVERLAYS */
 #auth-overlay {
     position: fixed;
     top: 0;
@@ -202,68 +202,54 @@ h1 {
     justify-content: center;
 }
 
-.save-btn {
-    width: 100%;
-    background-color: #1d3557;
-    color: white;
-    padding: 15px;
-    border-radius: 20px;
-    border: none;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
 .hidden { display: none !important; }
 
-/* --- ACTION BUTTONS --- */
+/* 8. ACTION BUTTONS (CONSOLIDATED) */
 .actions {
-    display: flex !important;  /* Force the flexbox layout */
-    flex-direction: row;      /* Keep them side-by-side */
-    gap: 12px;           /* Space between buttons */
+    display: flex !important;
+    flex-direction: row;
+    gap: 12px;
     width: 100%;
     margin-top: 25px;
-    padding: 0 5px;      /* Slight padding for mobile edges */
+    padding: 0;
     box-sizing: border-box;
+    align-items: stretch; /* Forces both buttons to have the same height */
 }
 
-.save-btn {
-    flex: 2;             /* Save is the primary, larger button */
-    background-color: #1d3557;
-    color: white;
-    padding: 15px;
-    border-radius: 20px;
+.save-btn, .reset-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;           /* Fixed height for both */
     border: none;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.reset-link {
-    flex: 1;             /* Reset is the secondary, smaller button */
-    background-color: #ecf0f1; 
-    color: #7f8c8d;
-    padding: 15px;
     border-radius: 20px;
-    border: none;
-    font-size: 13px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
     transition: all 0.2s;
+    box-sizing: border-box;
 }
 
-/* Hover/Active states for better feedback */
+.save-btn {
+    flex: 2;
+    background-color: #1d3557;
+    color: white;
+}
+
+.reset-link {
+    flex: 1;
+    background-color: #ecf0f1;
+    color: #7f8c8d;
+    font-size: 13px;
+}
+
+/* Interaction States */
 .save-btn:active, .reset-link:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
 
 .reset-link:hover {
-    background-color: #f8d7da; /* Turns a very light red when hovered */
+    background-color: #f8d7da;
     color: #e63946;
 }
