@@ -158,6 +158,21 @@ h1 {
     text-align: left;
 }
 
+#download-csv {
+    display: block;          /* Allows margin auto to work */
+    margin: 15px auto 0 auto; /* 15px top, auto left/right to center */
+    width: 100%;             /* Start full width */
+    max-width: 250px;        /* Match the width of your search/name boxes */
+    background-color: #72a788; /* Keeping your green color */
+    color: white;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
 /* Base Chip Style (Unselected) */
 .chip {
     padding: 12px 18px;
