@@ -164,9 +164,12 @@ function redrawPills() {
     allSessions.forEach((session) => {
         const pill = document.createElement('div');
         pill.classList.add('history-pill');
-        pill.style.cssText = "border: 1px solid #1d3557; margin-bottom: 10px; padding: 12px; padding-right: 40px; border-radius: 8px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
+        // Matches your clean style
+        pill.style.cssText = "border: 1px solid #1d3557; margin-bottom: 10px; padding: 12px; padding-right: 40px; border-radius: 12px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: left;";
 
-        const displayDate = new Date(session.created_at).toLocaleDateString('en-GB');
+        // Date format fix: dd mmm (e.g., 09 Apr)
+        const dateObj = new Date(session.created_at);
+        const displayDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 
         pill.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -253,7 +256,6 @@ btnIncorrect.addEventListener('click', () => { incorrectCount++; updateAccuracy(
 btnReset.addEventListener('click', resetAll);
 
 saveBtn.addEventListener('click', async () => {
-    // Get the current logged-in user
     const { data: { user } } = await db.auth.getUser();
     
     if (!user) {
@@ -266,15 +268,18 @@ saveBtn.addEventListener('click', async () => {
     const soundVal = soundInput.value || "General";
     const positionVal = document.getElementById('speech-position').value || "";
 
+    // CLEANED UP: Removes the extra "concepts" logic and fixed the syntax error
+    const combinedSound = `${soundVal} ${positionVal}`.trim();
+
     const newSession = {
         client_name: clientInput.value || "Unknown",
-        sound: `${soundVal} ${positionVal}.trim(),
+        sound: combinedSound, 
         level: levelInput.value,
         prompt: getSelectedCues(),
         correct: correctCount,
         incorrect: incorrectCount,
         accuracy: currentAccuracy,
-        user_id: user.id // <--- THIS LINKS THE DATA TO YOU
+        user_id: user.id 
     };
 
     await saveToCloud(newSession);
