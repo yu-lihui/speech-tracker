@@ -180,6 +180,12 @@ h1 {
     border-radius: 25px;
 }
 
+/* Hover effect for desktop */
+.chip:hover {
+    background-color: #e2e8f0;
+    border-color: #b1b1b1;
+}
+
 /* 6. MOBILE OVERRIDES - The Friendly Version */
 @media (max-width: 480px) {
     body { background-color: #ffffff; }
