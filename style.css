@@ -432,3 +432,13 @@ h1 {
     margin-bottom: 20px;
     font-family: sans-serif;
 }
+
+#login-btn:hover {
+    filter: brightness(1.1);
+    cursor: pointer;
+}
+
+#login-btn:active {
+    transform: scale(0.98); /* Slight "squish" when tapped */
+}
+
