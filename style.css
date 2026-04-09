@@ -217,3 +217,51 @@ h1 {
 }
 
 .hidden { display: none !important; }
+
+/* --- ACTION BUTTONS --- */
+.actions {
+    display: flex;
+    gap: 12px;           /* Space between buttons */
+    width: 100%;
+    margin-top: 25px;
+    padding: 0 5px;      /* Slight padding for mobile edges */
+}
+
+.save-btn {
+    flex: 2;             /* Save is the primary, larger button */
+    background-color: #1d3557;
+    color: white;
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.reset-link {
+    flex: 1;             /* Reset is the secondary, smaller button */
+    background-color: #ecf0f1; 
+    color: #7f8c8d;
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Hover/Active states for better feedback */
+.save-btn:active, .reset-link:active {
+    transform: scale(0.95);
+}
+
+.reset-link:hover {
+    background-color: #f8d7da; /* Turns a very light red when hovered */
+    color: #e63946;
+}
