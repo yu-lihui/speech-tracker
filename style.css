@@ -220,11 +220,13 @@ h1 {
 
 /* --- ACTION BUTTONS --- */
 .actions {
-    display: flex;
+    display: flex !important;  /* Force the flexbox layout */
+    flex-direction: row;      /* Keep them side-by-side */
     gap: 12px;           /* Space between buttons */
     width: 100%;
     margin-top: 25px;
     padding: 0 5px;      /* Slight padding for mobile edges */
+    box-sizing: border-box;
 }
 
 .save-btn {
