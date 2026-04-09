@@ -421,3 +421,14 @@ h1 {
         box-sizing: border-box;
     }
 }
+
+#auth-overlay input {
+    font-size: 16px; /* Prevents iPhone from "zooming in" when you tap the box */
+    -webkit-appearance: none;
+    border: 1px solid #d1d1d1;
+}
+
+#auth-overlay h2 {
+    margin-bottom: 20px;
+    font-family: sans-serif;
+}
