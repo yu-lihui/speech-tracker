@@ -338,6 +338,7 @@ h1 {
 }
 
 .save-btn, .reset-link {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -353,13 +354,11 @@ h1 {
 }
 
 .save-btn {
-    flex: 2;
     background-color: #1d3557;
     color: white;
 }
 
 .reset-link {
-    flex: 1;
     background-color: #ecf0f1;
     color: #7f8c8d;
     font-size: 13px;
@@ -373,4 +372,8 @@ h1 {
 .reset-link:hover {
     background-color: #f8d7da;
     color: #e63946;
+}
+
+.save-btn:hover {
+    background-color: #6c8fad;
 }
