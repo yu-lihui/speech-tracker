@@ -178,6 +178,13 @@ h1 {
 #correct-count { font-size: 24px; font-weight: bold; color: #a6d088; margin-top: 5px; }
 #incorrect-count { font-size: 24px; font-weight: bold; color: #f88888; margin-top: 5px; }
 
+/*FOOTER*/
+#footer, .logo-img {
+        width: 80px;
+        height: auto;  
+        margin-top: 20px;
+    }
+
 /* 5. INPUTS & FORMS - Restored Pretty Style */
 .target-grid {
     display: grid;
