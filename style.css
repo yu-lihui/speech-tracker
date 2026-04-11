@@ -72,6 +72,14 @@ body {
     padding: 0;             /* Remove padding since we use fixed height */
 }
 
+#forgot-password-link {
+    color: #457b9d; 
+    font-size: 12px; 
+    margin-top: 20px; 
+    cursor: pointer; 
+    text-decoration: underline;
+}
+
 /* Specifics for Login */
 .auth-btn {
     background-color: #1d3557;
