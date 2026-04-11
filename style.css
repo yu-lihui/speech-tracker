@@ -271,8 +271,11 @@ h1 {
 .search-wrapper {
     display: flex;          /* Sits icon and input in a row */
     align-items: center;    /* Vertically centers both */
+    border: 1px solid #ecf0f1;
     border-radius: 25px;    /* Makes it a rounded pill */
     border-radius: 25px;    /* The "pill" shape */
+    width: 100%;
+    max-width: 300px;
     margin: 20px auto;      /* Centers the bar on the page */
 }
 
