@@ -371,6 +371,7 @@ h1 {
     flex: 1;                /* Takes up all remaining space in the bar */
     border: none !important; /* Removes the default input box */
     outline: none;           /* Removes the blue ring when you tap it */
+    color: #457b9d;
 }
 
 h3 {
