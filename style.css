@@ -81,7 +81,7 @@ body {
     font-size: 16px; 
     border: 1px solid #457b9d; /* Fixed from border-color */
     border-radius: 15px;
-    background-color: #ffffff;
+    background-color: #F7FCFC;
     color: #457b9d !important; /* Force the light blue when typing */
     outline: none;
 }
@@ -115,7 +115,8 @@ body {
 
 .auth-divider {
     color: #457b9d;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
 }
     
 /* The "Login" button specifically */
