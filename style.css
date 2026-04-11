@@ -274,6 +274,7 @@ h1 {
     border: 1px solid #ecf0f1;
     border-radius: 25px;    /* Makes it a rounded pill */
     border-radius: 25px;    /* The "pill" shape */
+    padding: 0 15px;        /* Space inside the bar so icon isn't touching the edge */
     width: 100%;
     max-width: 300px;
     margin: 20px auto;      /* Centers the bar on the page */
