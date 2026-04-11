@@ -25,6 +25,24 @@ async function checkUser() {
     }
 }
 
+async function handlePasswordRecovery() {
+    // Check if the URL hash contains the recovery token
+    if (window.location.hash.includes("type=recovery")) {
+        
+        // 1. Hide the entire standard login UI
+        document.getElementById('auth-email').classList.add('hidden');
+        document.getElementById('auth-password').classList.add('hidden');
+        document.getElementById('login-btn').classList.add('hidden');
+        document.getElementById('google-login-btn').classList.add('hidden');
+        document.querySelector('.auth-divider').classList.add('hidden');
+        document.getElementById('signup-btn').classList.add('hidden');
+        document.getElementById('forgot-password-link').classList.add('hidden');
+        
+        // 2. Show the reset password section
+        document.getElementById('reset-password-section').classList.remove('hidden');
+    }
+}
+
 // Handle Sign Up Click
 document.getElementById('signup-btn').addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
