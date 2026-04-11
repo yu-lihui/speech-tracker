@@ -245,6 +245,11 @@ h1 {
     width: 100%;
 }
 
+.history-pill {
+    border: 2px solid #6c8fad;
+    border-radius: 15px;
+}
+
 #download-csv {
     display: block;          /* Allows margin auto to work */
     margin: 15px auto 0 auto; /* 15px top, auto left/right to center */
