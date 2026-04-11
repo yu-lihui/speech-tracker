@@ -264,6 +264,8 @@ h1 {
     width: 18px;      /* Small enough to sit inside the bar */
     height: 18px;
     opacity: 0.6;
+    object-fit: contain;
+    margin-right: 10px;
 }
 
 h3 {
