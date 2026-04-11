@@ -71,38 +71,31 @@ body {
     padding: 20px;
 }
 
-/* Email and Password Boxes */
+/* Corrected Border Syntax for Inputs */
 .auth-input {
     width: 80%;
     max-width: 350px;
     height: 50px;
     padding: 12px 15px;
     margin-bottom: 12px;
-    font-size: 16px; /* Prevents mobile zoom */
-    border-color: 1px solid #457b9d;
-    border-radius: 15px; /* Matching the pill and button curves */
+    font-size: 16px; 
+    border: 1px solid #457b9d; /* Fixed from border-color */
+    border-radius: 15px;
     background-color: #ffffff;
-    color: #457b9d; 
+    color: #457b9d !important; /* Force the light blue when typing */
     outline: none;
 }
 
 .auth-input::placeholder {
     color: #457b9d;
-    opacity: 0.5; /* Keeps it subtle until they start typing */
+    opacity: 0.5;
 }
 
 .auth-input:focus {
-    border-color: 2px solid #457b9d;
-    background-color: #ffffff;
-    color: #457b9d;
+    border: 2px solid #457b9d; /* Slightly thicker on focus */
 }
 
-.auth-input:not(:placeholder-shown) {
-    color: #457b9d;
-    font-weight: 600;
-}
-
-/* Base style for all Login/Google/Signup buttons */
+/* Base style for all Auth Buttons */
 .auth-btn, .google-btn, .signup-link {
     width: 80%;
     max-width: 350px;
@@ -117,6 +110,7 @@ body {
     transition: all 0.2s;
     border: none;
     margin-bottom: 10px;
+    text-decoration: none; /* In case they are anchor tags */
 }
 
 /* The "Login" button specifically */
@@ -130,44 +124,23 @@ body {
     background-color: white;
     color: #457b9d;
     border: 2px solid #457b9d;
-    margin-top: 5px; /* Tiny bit of space from the divider */
 }
 
-/* Google Button Tweaks */
+/* Google Button */
 .google-btn {
     background-color: white;
     color: #457b9d;
     border: 1px solid #457b9d;
-    font-weight: 500;
 }
 
-.google-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-}
-
-/* The "or" text */
-.auth-divider {
-    margin: 10px 0 15px 0;
-    color: #95a5a6;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Interactions */
-.auth-btn:active, .google-btn:active, .signup-link:active {
-    transform: scale(0.97);
-}
-
-/* Forgot Password */
+/* Forgot Password - Clinical Mauve/Salmon accent */
 #forgot-password-link {
     color: #E0A08B;
     font-size: 14px;
     margin-top: 15px;
     cursor: pointer;
     text-decoration: underline;
+    font-weight: 500;
 }
 
 /* 3. NAVIGATION MENU */
