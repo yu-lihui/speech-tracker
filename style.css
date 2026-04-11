@@ -251,6 +251,44 @@ h1 {
     border-radius: 15px;
 }
 
+.pill-client, .pill-sound {
+    color: #1d3557 !important; /* Your Navy Blue */
+    font-size: 14px;
+}
+
+/* The sub-text (Level and Cues) */
+.pill-details {
+    font-size: 11px;
+    color: #457b9d; /* Lighter Blue */
+    margin-top: 2px;
+}
+
+/* THIS makes the specific parts lowercase */
+.pill-details span {
+    text-transform: lowercase;
+}
+
+/* The date */
+.pill-date {
+    font-size: 10px;
+    color: #bdc3c7;
+    margin-top: 2px;
+}
+
+/* The Percentage box */
+.pill-accuracy span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Ensure the flex layout works without inline styles */
+.pill-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 #download-csv {
     display: block;          /* Allows margin auto to work */
     margin: 15px auto 0 auto; /* 15px top, auto left/right to center */
