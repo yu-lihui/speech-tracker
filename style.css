@@ -245,8 +245,8 @@ h1 {
     width: 100%;
 }
 
-.history-pill {
-    border: 2px solid #6c8fad;
+#history-log .history-pill { {
+    border: 2px solid #6c8fad !important;
     border-radius: 15px;
 }
 
