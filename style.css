@@ -81,11 +81,12 @@ body {
 }
 
 /* Login Button Specifics */
-.login-main {
+.login-btn {
     width: 80%;
     max-width: 350px;
     margin-top: 10px;
     border-radius: 15px;
+    background: #457b9d;
 }
 
 /* Signup/Create Account Button */
