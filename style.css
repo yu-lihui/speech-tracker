@@ -72,19 +72,19 @@ body {
     padding: 20px;
 }
 
-/* Corrected Border Syntax for Inputs */
 .auth-input {
     width: 80%;
     max-width: 350px;
-    height: 50px;
+    height: 50px !important;
     padding: 12px 15px;
     margin-bottom: 12px;
     font-size: 16px; 
-    border: 0.5px solid #457b9d; 
+    border: 1px solid #457b9d; 
     border-radius: 15px;
     background-color: #F7FCFC;
-    color: #457b9d !important; /* Force the light blue when typing */
+    color: #457b9d !important; /* Forces light blue while typing */
     outline: none;
+    box-sizing: border-box; /* Critical for height alignment */
 }
 
 .auth-input::placeholder {
@@ -122,32 +122,49 @@ body {
     opacity: 0.5;
 }
     
-/* The "Login" button specifically */
+.auth-btn, .google-btn, .signup-link {
+    width: 80%;
+    max-width: 350px;
+    height: 50px !important;     /* Forces exact height */
+    min-height: 50px !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    padding: 0;                  /* Removes internal padding conflict */
+    box-sizing: border-box;      /* Ensures borders don't add to height */
+    border: none;
+}
+
+/* Specific Button Styles */
 .auth-btn {
     background-color: #457b9d;
     color: white;
 }
 
-/* The "Create New Account" button */
 .signup-link {
     background-color: white;
     color: #457b9d;
-    border: 2px solid #457b9d;
+    border: 2px solid #457b9d !important;
 }
 
-/* Google Button */
 .google-btn {
     background-color: white;
     color: #457b9d;
-    border: 1px solid #457b9d;
+    border: 1px solid #457b9d !important;
 }
 
+/* Fix for the huge Google Icon */
 .google-icon {
-    width: 18px !important;  /* Locks the width */
-    height: 18px !important; /* Locks the height */
-    margin-right: 12px;      /* Keeps the gap between icon and text */
-    object-fit: contain;     /* Ensures it doesn't look stretched */
-    display: inline-block;
+    width: 18px !important;
+    height: 18px !important;
+    margin-right: 12px;
+    object-fit: contain;
 }
 
 /* Forgot Password - Clinical Mauve/Salmon accent */
