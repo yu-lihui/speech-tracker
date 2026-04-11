@@ -226,39 +226,38 @@ function displayClientHistory(clientName) {
         groups[entry.sound].push(entry);
     });
 
-    for (const sound in groups) {
-        const card = document.createElement('div');
-        card.className = 'goal-card';
-        card.style.cssText = "margin-bottom:20px; border:1px solid #6c8fad; border-radius:10px; overflow:hidden; background:white;";
+   for (const sound in groups) {
+    const card = document.createElement('div');
+    card.className = 'goal-card'; // Controlled by CSS now
 
-        let rows = groups[sound]
-            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-            .map(entry => `
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding:10px;">${entry.level}</td>
-                    <td style="padding:10px; color:#7f8c8d;">${entry.prompt || 'Indpt'}</td>
-                    <td style="padding:10px; text-align:center; font-weight:bold; color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
-                        ${entry.accuracy}%
-                    </td>
-                    <td style="padding:10px; text-align:right; font-size:10px; color:#bdc3c7;">${new Date(entry.created_at).toLocaleDateString('en-GB')}</td>
+    let rows = groups[sound]
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .map(entry => `
+            <tr class="goal-row">
+                <td class="cell-level">${entry.level}</td>
+                <td class="cell-cues">${entry.prompt || 'Indpt'}</td>
+                <td class="cell-acc" style="color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
+                    ${entry.accuracy}%
+                </td>
+                <td class="cell-date">${new Date(entry.created_at).toLocaleDateString('en-GB')}</td>
+            </tr>
+        `).join('');
+
+    card.innerHTML = `
+        <div class="goal-header">${sound}</div>
+        <table class="goal-table">
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Cues</th>
+                    <th>Acc%</th>
+                    <th>Date</th>
                 </tr>
-            `).join('');
-
-        card.innerHTML = `
-            <div style="background:#1d3557; color:white; padding:10px; font-weight:bold; text-align:center;">${sound}</div>
-            <table style="width:100%; border-collapse: collapse; font-size: 13px;">
-                <thead>
-                    <tr style="background:#f8f9fa; border-bottom:1px solid #ddd;">
-                        <th style="padding:8px; text-align:left;">Level</th>
-                        <th style="padding:8px; text-align:left;">Cues</th>
-                        <th style="padding:8px; text-align:center;">Acc%</th>
-                        <th style="padding:8px; text-align:right;">Date</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>`;
-        container.appendChild(card);
-    }
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+    container.appendChild(card);
+}
 }
 
 // 5. EVENT LISTENERS
