@@ -367,8 +367,8 @@ h3 {
     border-color: #b1b1b1;
 }
 
-.session-info {
-    margin-top: 40px;
+#dashboard-view .session-info {
+    margin-top: 20px;
 }
 
 /* 6. MOBILE OVERRIDES - The Friendly Version */
