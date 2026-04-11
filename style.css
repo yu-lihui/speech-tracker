@@ -113,6 +113,10 @@ body {
     text-decoration: none; /* In case they are anchor tags */
 }
 
+.auth-divider {
+    color: #457b9d;
+}
+    
 /* The "Login" button specifically */
 .auth-btn {
     background-color: #457b9d;
@@ -131,6 +135,14 @@ body {
     background-color: white;
     color: #457b9d;
     border: 1px solid #457b9d;
+}
+
+.google-icon {
+    width: 18px !important;  /* Locks the width */
+    height: 18px !important; /* Locks the height */
+    margin-right: 12px;      /* Keeps the gap between icon and text */
+    object-fit: contain;     /* Ensures it doesn't look stretched */
+    display: inline-block;
 }
 
 /* Forgot Password - Clinical Mauve/Salmon accent */
