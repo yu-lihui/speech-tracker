@@ -177,7 +177,7 @@ function redrawPills() {
         const pill = document.createElement('div');
         pill.classList.add('history-pill');
         // Matches your clean style
-        pill.style.cssText = "border: 1px solid #1d3557; margin-bottom: 10px; padding: 12px; padding-right: 40px; border-radius: 12px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: left;";
+        pill.style.cssText = "margin-bottom: 10px; padding: 12px; padding-right: 40px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: left;";
 
         // Date format fix: dd mmm (e.g., 09 Apr)
         const dateObj = new Date(session.created_at);
