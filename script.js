@@ -361,3 +361,23 @@ document.getElementById('header-logout-btn').addEventListener('click', async () 
         else window.location.reload();
     }
 });
+
+// --- FORGOT PASSWORD LOGIC ---
+document.getElementById('forgot-password-link').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value;
+
+    if (!email) {
+        alert("Please enter your email address first.");
+        return;
+    }
+
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.href, // This brings them back to your app after clicking the link
+    });
+
+    if (error) {
+        alert("Error: " + error.message);
+    } else {
+        alert("Password reset link sent! Check your inbox.");
+    }
+});
