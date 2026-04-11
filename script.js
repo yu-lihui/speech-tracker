@@ -175,11 +175,8 @@ function redrawPills() {
     historyLog.innerHTML = "";
     allSessions.forEach((session) => {
         const pill = document.createElement('div');
-        pill.classList.add('history-pill');
-        // Matches your clean style
-        pill.style.cssText = "margin-bottom: 10px; padding: 12px; padding-right: 40px; position: relative; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: left;";
+        pill.classList.add('history-pill'); // CSS file handles the border and padding now!
 
-        // Date format fix: dd mmm (e.g., 09 Apr)
         const dateObj = new Date(session.created_at);
         const displayDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 
