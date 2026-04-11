@@ -461,7 +461,7 @@ h3 {
 
 .goal-table th {
     padding: 10px 8px;
-    text-align: left;
+    text-align: center;
     color: #457b9d; /* Your Light Blue */
     font-weight: 600;
     text-transform: uppercase;
@@ -491,7 +491,7 @@ h3 {
 }
 
 .cell-cues {
-    color: #7f8c8d;
+    color: #1d3557;
     font-size: 12px;
     text-transform: lowercase;
 }
