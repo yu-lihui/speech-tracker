@@ -260,6 +260,21 @@ h1 {
     cursor: pointer;
 }
 
+.search-img {
+    width: 18px;      /* Small enough to sit inside the bar */
+    height: 18px;
+    opacity: 0.6;
+}
+
+h3 {
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1d3557;
+    margin-top: 10px;
+    font-weight: 600;
+}
+    
 /* Base Chip Style (Unselected) */
 .chip {
     padding: 12px 18px;
