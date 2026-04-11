@@ -367,6 +367,10 @@ h3 {
     border-color: #b1b1b1;
 }
 
+.session-info {
+    margin-top: 20px;
+}
+
 /* 6. MOBILE OVERRIDES - The Friendly Version */
 @media (max-width: 480px) {
     body { background-color: #ffffff; }
