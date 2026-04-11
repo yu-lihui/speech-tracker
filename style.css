@@ -79,15 +79,15 @@ body {
     padding: 12px 15px;
     margin-bottom: 12px;
     font-size: 16px; /* Prevents mobile zoom */
-    border: 1px solid #ecf0f1;
-    border-radius: 12px; /* Matching the pill and button curves */
-    background-color: #f8f9fa;
+    border: 1px solid #457b9d;
+    border-radius: 15px; /* Matching the pill and button curves */
+    background-color: #ffffff;
     color: #1d3557;
     outline: none;
 }
 
 .auth-input:focus {
-    border-color: #457b9d;
+    border: 2px solid #457b9d;
     background-color: #ffffff;
 }
 
@@ -101,7 +101,7 @@ body {
     align-items: center;
     font-size: 15px;
     font-weight: bold;
-    border-radius: 12px;
+    border-radius: 15px;
     cursor: pointer;
     transition: all 0.2s;
     border: none;
@@ -110,23 +110,23 @@ body {
 
 /* The "Login" button specifically */
 .auth-btn {
-    background-color: #1d3557;
+    background-color: #457b9d;
     color: white;
 }
 
 /* The "Create New Account" button */
 .signup-link {
     background-color: white;
-    color: #1d3557;
-    border: 2px solid #1d3557;
+    color: #457b9d;
+    border: 2px solid #457b9d;
     margin-top: 5px; /* Tiny bit of space from the divider */
 }
 
 /* Google Button Tweaks */
 .google-btn {
     background-color: white;
-    color: #444;
-    border: 1px solid #ddd;
+    color: #457b9d;
+    border: 1px solid #457b9d;
     font-weight: 500;
 }
 
@@ -153,7 +153,7 @@ body {
 /* Forgot Password */
 #forgot-password-link {
     color: #457b9d;
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 15px;
     cursor: pointer;
     text-decoration: underline;
