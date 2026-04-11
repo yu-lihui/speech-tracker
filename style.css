@@ -238,12 +238,14 @@ h1 {
 /* --- HISTORY LOG SECTION --- */
 .history-log {
     margin-top: 50px;       /* Increased from 30px to push it further from Save/Reset */
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column; /* Keeps pills stacked neatly */
     gap: 12px;
     border-top: 2px solid #ecf0f1; /* Slightly thicker line for clear separation */
     padding-top: 30px;      /* Space between the line and the first pill */
     width: 100%;
+
 }
 
 .history-pill {
