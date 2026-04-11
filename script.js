@@ -186,8 +186,8 @@ function redrawPills() {
         pill.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="flex: 1;">
-                    <strong style="color: #1d3557; font-size: 14px;">${session.client_name}</strong>: ${session.sound}
-                    <div style="font-size: 11px; color: #7f8c8d; margin-top: 2px;">
+                    <strong style="color: #6c8fad; font-size: 14px;">${session.client_name}</strong>: ${session.sound}
+                    <div style="font-size: 11px; color: #6c8fad; margin-top: 2px;">
                         ${session.level} | Cues: ${session.prompt}
                     </div>
                     <div style="font-size: 10px; color: #bdc3c7; margin-top: 2px;">${displayDate}</div>
@@ -200,7 +200,7 @@ function redrawPills() {
             </div>
             <span class="delete-btn" 
                 onclick="deleteFromCloud('${session.id}')" 
-                style="cursor: pointer; position: absolute; top: 10px; right: 10px; color: #e63946; font-size: 22px; line-height: 1; padding: 5px 8px;">
+                style="cursor: pointer; position: absolute; top: 8px; right: 8px; color: #e63946; font-size: 22px; line-height: 1; padding: 5px 8px;">
                   &times;
             </span>
         `;
@@ -229,7 +229,7 @@ function displayClientHistory(clientName) {
     for (const sound in groups) {
         const card = document.createElement('div');
         card.className = 'goal-card';
-        card.style.cssText = "margin-bottom:20px; border:1px solid #1d3557; border-radius:10px; overflow:hidden; background:white;";
+        card.style.cssText = "margin-bottom:20px; border:1px solid #6c8fad; border-radius:10px; overflow:hidden; background:white;";
 
         let rows = groups[sound]
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
