@@ -184,16 +184,19 @@ function redrawPills() {
         const displayDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 
         pill.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="flex: 1;">
-                    <strong style="color: #6c8fad; font-size: 14px;">${session.client_name}</strong>: ${session.sound}
-                    <div style="font-size: 11px; color: #6c8fad; margin-top: 2px;">
-                        ${session.level} | Cues: ${session.prompt}
+            <div class="pill-content">
+                <div class="pill-info">
+                    <strong class="pill-client">${session.client_name}</strong>: 
+                    <strong class="pill-sound">${session.sound}</strong>
+                    
+                    <div class="pill-details">
+                        <span>${session.level}</span> | Cues: <span>${session.prompt}</span>
                     </div>
-                    <div style="font-size: 10px; color: #bdc3c7; margin-top: 2px;">${displayDate}</div>
+                    
+                    <div class="pill-date">${displayDate}</div>
                 </div>
-                <div style="text-align: right; margin-left: 10px;">
-                    <span style="font-size: 18px; font-weight: bold; color: ${session.accuracy >= 80 ? '#2a9d8f' : '#e76f51'};">
+                <div class="pill-accuracy">
+                    <span style="color: ${session.accuracy >= 80 ? '#2a9d8f' : '#e76f51'};">
                         ${session.accuracy}%
                     </span>
                 </div>
