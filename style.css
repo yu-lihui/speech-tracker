@@ -368,7 +368,7 @@ h1 {
 }
 
 .search-wrapper:focus-within .search-img {
-    filter: sepia(1) hue-rotate(160deg) saturate(2) brightness(100%);
+    filter: filter: invert(44%) sepia(21%) saturate(952%) hue-rotate(162deg) brightness(97%) contrast(91%);
 }
 
 #search-client {
