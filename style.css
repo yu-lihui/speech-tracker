@@ -273,6 +273,7 @@ h1 {
 .input-icon {
     width: 20px;
     height: 20px;
+    margin-right: 10px;
     opacity: 0.5;
     object-fit: contain;
 }
@@ -282,7 +283,11 @@ h1 {
     outline: none;padding: 10px 0;
     width: 100%;
 }
-    
+
+.input-wrapper:focus-within {
+    border-bottom-color: #1d3557;
+}
+
 .search-wrapper {
     display: flex;          /* Sits icon and input in a row */
     align-items: center;    /* Vertically centers both */
