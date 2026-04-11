@@ -79,16 +79,22 @@ body {
     padding: 12px 15px;
     margin-bottom: 12px;
     font-size: 16px; /* Prevents mobile zoom */
-    border: 1px solid #457b9d;
+    border-color: 1px solid #457b9d;
     border-radius: 15px; /* Matching the pill and button curves */
     background-color: #ffffff;
-    color: #1d3557;
+    color: #457b9d; 
     outline: none;
 }
 
+.auth-input::placeholder {
+    color: #457b9d;
+    opacity: 0.5; /* Keeps it subtle until they start typing */
+}
+
 .auth-input:focus {
-    border: 2px solid #457b9d;
+    border-color: 2px solid #457b9d;
     background-color: #ffffff;
+    color: #457b9d;
 }
 
 /* Base style for all Login/Google/Signup buttons */
