@@ -246,7 +246,7 @@ h1 {
 }
 
 #history-log .history-pill { {
-    border: 2px solid #6c8fad !important;
+    border: 2px solid #6c8fad;
     border-radius: 15px;
 }
 
