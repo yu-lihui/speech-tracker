@@ -399,9 +399,9 @@ h3 {
 
 /* Selected Chip Style (When tapped) */
 .chip.selected {
-    background-color: #1d3557 !important; /* Dark blue when active */
+    background-color: #6c8fad !important; 
     color: #ffffff !important;           /* Pure white text */
-    border-color: #1d3557 !important;
+    border-color: #6c8fad !important;
     border-radius: 25px;
 }
 
