@@ -491,6 +491,7 @@ h3 {
 }
 
 .cell-cues {
+    font-weight: 500;
     color: #1d3557;
     font-size: 12px;
     text-transform: lowercase;
