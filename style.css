@@ -272,6 +272,8 @@ h1 {
     display: flex;          /* Sits icon and input in a row */
     align-items: center;    /* Vertically centers both */
     border-radius: 25px;    /* Makes it a rounded pill */
+    border-radius: 25px;    /* The "pill" shape */
+    margin: 20px auto;      /* Centers the bar on the page */
 }
 
 h3 {
