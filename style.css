@@ -365,7 +365,7 @@ h1 {
     opacity: 0.5;
     object-fit: contain;
     margin-right: 10px;
-    filter: invert(47%) sepia(14%) safari-saturate(1000%) hue-rotate(165deg) brightness(95%) contrast(90%);
+    filter: sepia(1) hue-rotate(160deg) saturate(2) brightness(80%);
 }
 
 #search-client {
