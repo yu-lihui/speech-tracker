@@ -365,6 +365,7 @@ h1 {
     opacity: 0.5;
     object-fit: contain;
     margin-right: 10px;
+    filter: invert(47%) sepia(14%) safari-saturate(1000%) hue-rotate(165deg) brightness(95%) contrast(90%);
 }
 
 #search-client {
@@ -372,6 +373,12 @@ h1 {
     border: none !important; /* Removes the default input box */
     outline: none;           /* Removes the blue ring when you tap it */
     color: #457b9d;
+}
+
+/* The "Type child's name..." placeholder text */
+#search-client::placeholder {
+    color: #457b9d;
+    opacity: 0.6; /* Makes it look like a placeholder */
 }
 
 h3 {
