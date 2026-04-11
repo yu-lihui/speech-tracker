@@ -426,6 +426,87 @@ h3 {
     margin-top: 40px;
 }
 
+/* --- GOAL CARDS (DASHBOARD) --- */
+
+.goal-card {
+    margin-bottom: 25px;
+    border: 2px solid #1d3557; /* Your Navy Blue */
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.goal-header {
+    background: #1d3557;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: lowercase; /* Matches your preferred lowercase style */
+    letter-spacing: 1px;
+}
+
+.goal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+/* Header Row of the Table */
+.goal-table thead tr {
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.goal-table th {
+    padding: 10px 8px;
+    text-align: left;
+    color: #457b9d; /* Your Light Blue */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+/* Individual Rows */
+.goal-row {
+    border-bottom: 1px solid #eee;
+}
+
+.goal-row:last-child {
+    border-bottom: none;
+}
+
+.goal-row td {
+    padding: 12px 8px;
+    vertical-align: middle;
+}
+
+/* Specific Cell Styling */
+.cell-level {
+    font-weight: 500;
+    color: #1d3557;
+    text-transform: lowercase;
+}
+
+.cell-cues {
+    color: #7f8c8d;
+    font-size: 11px;
+    text-transform: lowercase;
+}
+
+.cell-acc {
+    text-align: center;
+    font-weight: bold;
+}
+
+.cell-date {
+    text-align: right;
+    font-size: 10px;
+    color: #bdc3c7;
+}
+
 /* 6. MOBILE OVERRIDES - The Friendly Version */
 @media (max-width: 480px) {
     body { background-color: #ffffff; }
