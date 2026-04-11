@@ -55,47 +55,67 @@ body {
     margin-bottom: 30px; /* More breathing room before the Email box */
 }
 
-.auth-btn, #signup-btn {
+/* --- AUTH OVERLAY & INPUTS --- */
+#auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-input {
+    padding: 12px;
+    margin: 10px;
     width: 80%;
     max-width: 350px;
-    height: 50px;            /* Forces both to be exactly the same height */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px; /* Prevents iPhone zoom on focus */
+}
+
+/* Login Button Specifics */
+.login-main {
+    width: 80%;
+    max-width: 350px;
+    margin-top: 10px;
+    /* Inherits .auth-btn styles already in your CSS */
+}
+
+/* Signup/Create Account Button */
+.signup-link {
+    width: 80%;
+    max-width: 350px;
     margin-top: 15px;
-    transition: all 0.2s;
-    box-sizing: border-box; /* Includes border in the 50px height */
-    padding: 0;             /* Remove padding since we use fixed height */
-}
-
-#forgot-password-link {
-    color: #457b9d; 
-    font-size: 12px; 
-    margin-top: 20px; 
-    cursor: pointer; 
-    text-decoration: underline;
-}
-
-/* Specifics for Login */
-.auth-btn {
-    background-color: #1d3557;
-    color: white;
-    border: none;
-}
-
-/* Specifics for Signup */
-#signup-btn {
-    background-color: white;
+    padding: 12px;
+    border: 1px solid #1d3557;
+    background: white;
     color: #1d3557;
-    border: 2px solid #1d3557; /* Matches the login color */
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.auth-btn:active, #signup-btn:active {
-    transform: scale(0.97);
+.signup-link:active {
+    background-color: #f1f4f8;
+    transform: scale(0.98);
+}
+
+/* Forgot Password Link */
+#forgot-password-link {
+    color: #457b9d;
+    font-size: 12px;
+    margin-top: 20px;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 /* 3. NAVIGATION MENU */
