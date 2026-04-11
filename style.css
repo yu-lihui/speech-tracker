@@ -365,6 +365,9 @@ h1 {
     opacity: 0.5;
     object-fit: contain;
     margin-right: 10px;
+}
+
+.search-wrapper:focus-within .search-img {
     filter: sepia(1) hue-rotate(160deg) saturate(2) brightness(80%);
 }
 
@@ -378,7 +381,7 @@ h1 {
 /* The "Type child's name..." placeholder text */
 #search-client::placeholder {
     color: #457b9d;
-    opacity: 0.6; /* Makes it look like a placeholder */
+    opacity: 0.5; /* Makes it look like a placeholder */
 }
 
 h3 {
