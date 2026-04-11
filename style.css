@@ -283,6 +283,11 @@ h1 {
     width: 100%;
 }
 
+#client-name:focus {
+    color: #6c8fad;
+    transition: color 0.2s ease;
+}
+
 .input-wrapper:focus-within {
     border-bottom-color: #6c8fad;
 }
