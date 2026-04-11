@@ -98,7 +98,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     padding: 10px 0;
     border-bottom: 2px solid #ecf0f1;
 }
@@ -267,7 +267,6 @@ h1 {
     border-bottom: 2px solid #ecf0f1; /* Keeps your clean underlined look */
     max-width: 250px;
     margin: 0 auto 20px auto; /* Centers the bar */
-    padding: 5px 0;
 }
 
 .input-icon {
