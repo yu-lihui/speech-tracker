@@ -63,58 +63,98 @@ body {
     width: 100%;
     height: 100%;
     background: white;
-    z-index: 9999;
+    z-index: 20000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
+/* Email and Password Boxes */
 .auth-input {
-    padding: 12px;
-    margin: 10px;
     width: 80%;
     max-width: 350px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px; /* Prevents iPhone zoom on focus */
-}
-
-/* Login Button Specifics */
-.login-btn {
-    width: 80%;
-    max-width: 350px;
-    margin-top: 10px;
-    border-radius: 15px;
-    background: #457b9d;
-}
-
-/* Signup/Create Account Button */
-.signup-link {
-    width: 80%;
-    max-width: 350px;
-    margin-top: 15px;
-    padding: 12px;
-    border: 1px solid #1d3557;
-    background: white;
+    height: 50px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    font-size: 16px; /* Prevents mobile zoom */
+    border: 1px solid #ecf0f1;
+    border-radius: 12px; /* Matching the pill and button curves */
+    background-color: #f8f9fa;
     color: #1d3557;
-    border-radius: 15px;
-    font-size: 14px;
+    outline: none;
+}
+
+.auth-input:focus {
+    border-color: #457b9d;
+    background-color: #ffffff;
+}
+
+/* Base style for all Login/Google/Signup buttons */
+.auth-btn, .google-btn, .signup-link {
+    width: 80%;
+    max-width: 350px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
     font-weight: bold;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
+    border: none;
+    margin-bottom: 10px;
 }
 
-.signup-link:active {
-    background-color: #f1f4f8;
-    transform: scale(0.98);
+/* The "Login" button specifically */
+.auth-btn {
+    background-color: #1d3557;
+    color: white;
 }
 
-/* Forgot Password Link */
+/* The "Create New Account" button */
+.signup-link {
+    background-color: white;
+    color: #1d3557;
+    border: 2px solid #1d3557;
+    margin-top: 5px; /* Tiny bit of space from the divider */
+}
+
+/* Google Button Tweaks */
+.google-btn {
+    background-color: white;
+    color: #444;
+    border: 1px solid #ddd;
+    font-weight: 500;
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+}
+
+/* The "or" text */
+.auth-divider {
+    margin: 10px 0 15px 0;
+    color: #95a5a6;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Interactions */
+.auth-btn:active, .google-btn:active, .signup-link:active {
+    transform: scale(0.97);
+}
+
+/* Forgot Password */
 #forgot-password-link {
     color: #457b9d;
     font-size: 12px;
-    margin-top: 20px;
+    margin-top: 15px;
     cursor: pointer;
     text-decoration: underline;
 }
