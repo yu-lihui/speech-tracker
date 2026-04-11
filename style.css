@@ -256,16 +256,15 @@ h1 {
     font-size: 14px;
 }
 
+.pill-sound {
+    text-transform: lowercase;
+}
+
 /* The sub-text (Level and Cues) */
 .pill-details {
     font-size: 11px;
     color: #457b9d; /* Lighter Blue */
     margin-top: 2px;
-}
-
-/* THIS makes the specific parts lowercase */
-.pill-details span {
-    text-transform: lowercase;
 }
 
 /* The date */
