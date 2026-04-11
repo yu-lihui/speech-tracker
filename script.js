@@ -15,16 +15,13 @@ async function checkUser() {
 
     if (user) {
         if (authOverlay) authOverlay.style.display = 'none';
-        if (header) header.style.display = 'flex'; // Reveal header
+        if (header) header.style.display = 'flex'; 
         document.getElementById('user-display-email').textContent = user.email;
-
-        // NEW: Scroll to top so the Client Name box is visible
         window.scrollTo(0, 0);
-        
         loadHistory();
     } else {
         if (authOverlay) authOverlay.style.display = 'flex';
-        if (header) header.style.display = 'none'; // Keep hidden
+        if (header) header.style.display = 'none'; 
     }
 }
 
@@ -362,22 +359,25 @@ document.getElementById('header-logout-btn').addEventListener('click', async () 
     }
 });
 
-// --- FORGOT PASSWORD LOGIC ---
+// NEW: Google Login
+document.getElementById('google-login-btn').addEventListener('click', async () => {
+    const { error } = await db.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin }
+    });
+    if (error) alert("Google Login Error: " + error.message);
+});
+
+// NEW: Forgot Password
 document.getElementById('forgot-password-link').addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
-
     if (!email) {
         alert("Please enter your email address first.");
         return;
     }
-
     const { error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.href, // This brings them back to your app after clicking the link
+        redirectTo: window.location.href,
     });
-
-    if (error) {
-        alert("Error: " + error.message);
-    } else {
-        alert("Password reset link sent! Check your inbox.");
-    }
+    if (error) alert("Error: " + error.message);
+    else alert("Password reset link sent! Check your inbox.");
 });
