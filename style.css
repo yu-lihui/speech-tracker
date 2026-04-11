@@ -115,6 +115,7 @@ body {
 
 .auth-divider {
     color: #457b9d;
+    margin-bottom: 10px;
 }
     
 /* The "Login" button specifically */
