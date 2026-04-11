@@ -288,6 +288,11 @@ h1 {
     transition: color 0.2s ease;
 }
 
+#client-name:not(:placeholder-shown) {
+    color: #6c8fad;
+    font-weight: 600;
+}
+
 .input-wrapper:focus-within {
     border-bottom-color: #6c8fad;
 }
