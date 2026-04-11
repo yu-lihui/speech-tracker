@@ -79,7 +79,7 @@ body {
     padding: 12px 15px;
     margin-bottom: 12px;
     font-size: 16px; 
-    border: 1px solid #457b9d; /* Fixed from border-color */
+    border: 0.5px solid #457b9d; 
     border-radius: 15px;
     background-color: #F7FCFC;
     color: #457b9d !important; /* Force the light blue when typing */
@@ -92,7 +92,7 @@ body {
 }
 
 .auth-input:focus {
-    border: 2px solid #457b9d; /* Slightly thicker on focus */
+    border: 1px solid #457b9d; /* Slightly thicker on focus */
 }
 
 /* Base style for all Auth Buttons */
@@ -116,7 +116,9 @@ body {
 .auth-divider {
     color: #457b9d;
     margin-bottom: 15px;
-    font-size: 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    opacity: 0.5;
 }
     
 /* The "Login" button specifically */
