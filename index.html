@@ -18,12 +18,12 @@
         </button>
     </div>
     
-    <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <div id="auth-overlay">
         <div class="logo-container">
             <img src="logo.png" alt="Logo" class="logo-img">
         </div>
-        <input type="email" id="auth-email" placeholder="Email" style="padding:12px; margin:10px; width:80%; max-width:350px; border:1px solid #ccc; border-radius:8px;">
-        <input type="password" id="auth-password" placeholder="Password" style="padding:12px; margin:10px; width:80%; max-width:350px; border:1px solid #ccc; border-radius:8px;">
+        <input type="email" id="auth-email" placeholder="Email" class="auth-input">
+        <input type="password" id="auth-password" placeholder="Password" class="auth-input">
         
         <button id="google-login-btn" class="google-btn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="google-icon" alt="Google">
@@ -32,11 +32,8 @@
 
         <div class="auth-divider">or</div>
         
-        <button id="login-btn" class="auth-btn" style="width:80%; max-width:350px; margin-top:10px;">Login</button>
-        <button id="signup-btn" 
-            style="width:80%; max-width:350px; margin-top:15px; padding: 10px; border: 1px solid #1d3557; background: white; color: #1d3557; border-radius: 8px; font-size: 14px; cursor: pointer;">
-            Create New Account
-        </button> 
+        <button id="login-btn" class="auth-btn login-main">Login</button>
+        <button id="signup-btn" class="signup-link">Create New Account</button> 
         <p id="forgot-password-link">Forgot password?</p>
     
     </div>
