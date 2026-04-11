@@ -36,8 +36,8 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-bottom: 15px;
-    margin-top: 30px;
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
 
 .logo-img {
@@ -68,9 +68,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Changed from center to flex-start to allow scrolling */
     padding: 40px 20px;
-    overflow-y: auto; /* Adds a scrollbar ONLY if the screen is too small */
 }
 
 .auth-input {
