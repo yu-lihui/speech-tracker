@@ -44,7 +44,6 @@ body {
     width: auto;
     max-width: 80%;    /* Ensures it doesn't hit the screen edges */
     object-fit: contain;
-    filter: invert(47%) sepia(14%) saturate(1039%) hue-rotate(161deg) brightness(96%) contrast(92%);
 }
 
 /* --- LOGIN SCREEN BUTTONS --- */
@@ -54,8 +53,6 @@ body {
     width: auto;
     max-width: 85%;      /* Allows it to be wider on the screen */
     margin-bottom: 30px; /* More breathing room before the Email box */
-    filter: invert(47%) sepia(14%) saturate(1039%) hue-rotate(161deg) brightness(96%) contrast(92%);
-}
 }
 
 .auth-btn, #signup-btn {
@@ -192,7 +189,6 @@ h1 {
     width: auto;
     height: 40px;
     opacity: 0.7;
-    filter: invert(47%) sepia(14%) saturate(1039%) hue-rotate(161deg) brightness(96%) contrast(92%);
 }
 
 /* 5. INPUTS & FORMS */
