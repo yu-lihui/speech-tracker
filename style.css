@@ -178,6 +178,30 @@ body {
     border: 1px solid #457b9d !important;
 }
 
+.auth-view {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.auth-title {
+    color: #457b9d;
+    font-size: 18px;
+    text-transform: lowercase;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+/* Ensure the toggle text is styled correctly */
+#go-to-signup, #go-to-login {
+    color: #457b9d;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 /* Fix for the huge Google Icon */
 .google-icon {
     width: 18px !important;
