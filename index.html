@@ -33,8 +33,16 @@
                 Login with Google
         </button>
         <p class="signup-text">No account? <span id="signup-toggle">Sign up now</span></p>
-        
 
+        <div id="signup-view" class="auth-view hidden">
+        <h3 class="auth-title">create account</h3>
+        <input type="email" id="signup-email" class="auth-input" placeholder="email">
+        <input type="password" id="signup-password" class="auth-input" placeholder="password">
+        <button id="signup-btn" class="auth-btn">create account</button>
+        
+        <p class="signup-text">already have an account? <span id="go-to-login">login</span></p>
+        </div>
+        
         <div id="reset-password-section" class="hidden">
             <h3>create new password</h3>
             <input type="password" id="new-password" placeholder="New Password" class="auth-input">
