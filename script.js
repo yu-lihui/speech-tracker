@@ -10,18 +10,21 @@ const db = createClient(supabaseUrl, supabaseKey);
 // --- NEW: AUTHENTICATION LOGIC ---
 async function checkUser() {
     const { data: { user } } = await db.auth.getUser();
+    const mainApp = document.querySelector('.container'); // Your tracker box
     const header = document.getElementById('account-header');
     const authOverlay = document.getElementById('auth-overlay');
 
     if (user) {
-        if (authOverlay) authOverlay.style.display = 'none';
-        if (header) header.style.display = 'flex'; 
-        document.getElementById('user-display-email').textContent = user.email;
-        window.scrollTo(0, 0);
+        // USER LOGGED IN
+        authOverlay.classList.add('hidden');
+        mainApp.style.display = 'block'; // Show tracker
+        if (header) header.style.display = 'flex';
         loadHistory();
     } else {
-        if (authOverlay) authOverlay.style.display = 'flex';
-        if (header) header.style.display = 'none'; 
+        // USER LOGGED OUT
+        authOverlay.classList.remove('hidden');
+        mainApp.style.display = 'none';  // LITERALLY remove the tracker from the page
+        if (header) header.style.display = 'none';
     }
 }
 
