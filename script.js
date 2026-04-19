@@ -386,16 +386,18 @@ document.getElementById('google-login-btn').addEventListener('click', async () =
     if (error) alert("Google Login Error: " + error.message);
 });
 
-// NEW: Forgot Password
 document.getElementById('forgot-password-link').addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
     if (!email) {
-        alert("Please enter your email address first.");
+        alert("Please enter your email address.");
         return;
     }
+
     const { error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.href,
+        // Explicitly set the Vercel URL here to match Supabase settings
+        redirectTo: 'https://speechtracker.vercel.app', 
     });
+
     if (error) alert("Error: " + error.message);
-    else alert("Password reset link sent! Check your inbox.");
+    else alert("Check your email!");
 });
