@@ -96,7 +96,7 @@ body {
 }
 
 /* Base style for all Auth Buttons */
-.auth-btn, .google-btn, .signup-link {
+.auth-btn, .google-btn {
     width: 80%;
     max-width: 350px;
     height: 50px;
@@ -121,7 +121,7 @@ body {
     opacity: 0.5;
 }
     
-.auth-btn, .google-btn, .signup-link {
+.auth-btn, .google-btn {
     width: 80%;
     max-width: 350px;
     height: 50px !important;     /* Forces exact height */
@@ -140,16 +140,32 @@ body {
     border: none;
 }
 
+/* --- SIGN UP TEXT LINK --- */
+.signup-text {
+    font-size: 14px;
+    color: #95a5a6; /* Subtle grey */
+    margin-top: 20px;
+    margin-bottom: 5px;
+    text-transform: lowercase;
+}
+
+#signup-toggle {
+    color: #457b9d; /* Your Light Blue */
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+#signup-toggle:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+}
+
 /* Specific Button Styles */
 .auth-btn {
     background-color: #457b9d;
     color: white;
-}
-
-.signup-link {
-    background-color: white;
-    color: #457b9d;
-    border: 2px solid #457b9d !important;
 }
 
 .google-btn {
