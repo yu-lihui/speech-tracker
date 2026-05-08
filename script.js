@@ -48,8 +48,8 @@ async function handlePasswordRecovery() {
 
 // Handle Sign Up Click
 document.getElementById('signup-btn').addEventListener('click', async () => {
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
 
     if (password.length < 6) {
         alert("Password must be at least 6 characters.");
@@ -78,7 +78,7 @@ document.getElementById('login-btn').addEventListener('click', async () => {
         alert("Login failed: " + error.message);
     } else {
         // Success!
-        document.getElementById('auth-overlay').style.display = 'none';
+        document.getElementById('auth-overlay').classList.add('hidden');
         document.getElementById('account-header').style.display = 'flex'; // Show the header!
 
         // NEW: Scroll to top immediately after login
@@ -90,8 +90,31 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     }
 });
 
+document.getElementById('signup-toggle').addEventListener('click', () => {
+    document.getElementById('signup-view').classList.remove('hidden');
+    document.getElementById('auth-email').classList.add('hidden');
+    document.getElementById('auth-password').classList.add('hidden');
+    document.getElementById('login-btn').classList.add('hidden');
+    document.getElementById('forgot-password-link').classList.add('hidden');
+    document.querySelector('.signup-text').classList.add('hidden');
+    document.querySelector('.auth-divider').classList.add('hidden');
+    document.getElementById('google-login-btn').classList.add('hidden');
+});
+
+document.getElementById('go-to-login').addEventListener('click', () => {
+    document.getElementById('signup-view').classList.add('hidden');
+    document.getElementById('auth-email').classList.remove('hidden');
+    document.getElementById('auth-password').classList.remove('hidden');
+    document.getElementById('login-btn').classList.remove('hidden');
+    document.getElementById('forgot-password-link').classList.remove('hidden');
+    document.querySelector('.signup-text').classList.remove('hidden');
+    document.querySelector('.auth-divider').classList.remove('hidden');
+    document.getElementById('google-login-btn').classList.remove('hidden');
+});
+
 // Run this check immediately
 checkUser();
+handlePasswordRecovery();
 
 // 1. Memory Buckets
 let correctCount = 0;
@@ -278,6 +301,11 @@ function displayClientHistory(clientName) {
 }
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // 5. EVENT LISTENERS
 
 btnCorrect.addEventListener('click', () => { correctCount++; updateAccuracy(); });
@@ -403,4 +431,15 @@ document.getElementById('forgot-password-link').addEventListener('click', async 
 
     if (error) alert("Error: " + error.message);
     else alert("Check your email!");
+});
+
+document.getElementById('update-password-btn').addEventListener('click', async () => {
+    const newPassword = document.getElementById('new-password').value;
+    if (newPassword.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+    }
+    const { error } = await db.auth.updateUser({ password: newPassword });
+    if (error) alert("Failed: " + error.message);
+    else { alert("Password updated!"); window.location.hash = ''; window.location.reload(); }
 });
