@@ -167,7 +167,14 @@ checkUser();
                 alert("This reset link is invalid or has expired.");
                 return;
             }
+
+        if (data?.session) {
+            await db.auth.setSession({
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token
+            });
         }
+    }
         
         // Force show reset UI (hide tracker, show reset form)
         const authOverlay = document.getElementById('auth-overlay');
@@ -507,14 +514,20 @@ document.getElementById('update-password-btn').addEventListener('click', async (
         return;
     }
     
+    // Verify session exists before updating
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) {
+        alert("Session expired. Please request a new reset link.");
+        return;
+    }
+    
     const { error } = await db.auth.updateUser({ password: newPassword });
     
     if (error) {
         alert("Failed to update password: " + error.message);
     } else {
-        document.getElementById('reset-password-section').classList.add('hidden');
         alert("Password updated! Please log in with your new password.");
-        // Clear URL and go back to login
+        await db.auth.signOut();
         window.location.href = window.location.origin;
     }
 });
