@@ -13,7 +13,7 @@ body {
 
 /* 2. THE APP CONTAINER */
 .container {
-    display: block;
+    display: none;
     margin: 60px auto 20px auto; 
     width: 95%;
     max-width: 500px;
