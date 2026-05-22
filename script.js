@@ -243,6 +243,10 @@ const navDashboard = document.querySelector('#nav-dashboard');
 const trackerView = document.querySelector('#tracker-view');
 const dashboardView = document.querySelector('#dashboard-view');
 const downloadCsvBtn = document.querySelector('#download-csv');
+const sendOtpBtn = document.querySelector('#send-otp-btn');
+const otpSection = document.querySelector('#otp-section');
+const otpCodeInput = document.querySelector('#otp-code');
+const verifyOtpBtn = document.querySelector('#verify-otp-btn');
 
 // --- CLOUD FUNCTIONS ---
 async function loadHistory() {
@@ -633,6 +637,61 @@ downloadCsvBtn.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
+sendOtpBtn.addEventListener('click', async () => {
+  const email = document.getElementById('auth-email').value.trim();
+
+  if (!email) {
+    alert("Please enter your email address first.");
+    document.getElementById('auth-email').focus();
+    return;
+  }
+
+  const { error } = await db.auth.signInWithOtp({
+    email: email,
+    options: {
+      shouldCreateUser: true
+    }
+  });
+
+  if (error) {
+    alert("Could not send code: " + error.message);
+    return;
+  }
+
+  alert("A one-time code has been sent to your email.");
+  otpSection.classList.remove('hidden');
+  otpCodeInput.focus();
+});
+
+verifyOtpBtn.addEventListener('click', async () => {
+  const email = document.getElementById('auth-email').value.trim();
+  const token = otpCodeInput.value.trim();
+
+  if (!email) {
+    alert("Please enter your email address.");
+    document.getElementById('auth-email').focus();
+    return;
+  }
+
+  if (!token) {
+    alert("Please enter the code from your email.");
+    otpCodeInput.focus();
+    return;
+  }
+
+  const { data, error } = await db.auth.verifyOtp({
+    email: email,
+    token: token,
+    type: 'email'
+  });
+
+  if (error) {
+    alert("Invalid or expired code: " + error.message);
+    return;
+  }
+
+  showAppUI(data.user);
+});
 
 // Password visibility toggle
 document.querySelectorAll('.toggle-password').forEach(btn => {
