@@ -1,10 +1,8 @@
 // Initialize Supabase correctly for browser use
 const { createClient } = supabase; // This grabs the tool from the script tag
-
 const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1leXBpdm1jY3lra3F0YXpjcm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MTk0MzYsImV4cCI6MjA5MTI5NTQzNn0.AZszBKbiqIVq5A3vFSzB-uZDRE6bGSZYTcAg0xKVTv4';
+const supabaseKey = 'sb_publishable_AkQZZKS2b5Ejbo5L5wL38Q_K2AL_JIW';
 
-// We use 'db' here to keep it distinct and easy for the functions to find
 const db = createClient(supabaseUrl, supabaseKey);
 
 // --- NEW: AUTHENTICATION LOGIC ---
