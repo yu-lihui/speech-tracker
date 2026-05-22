@@ -27,21 +27,45 @@ async function checkUser() {
 }
 
 async function handlePasswordRecovery() {
-    // Check if the URL hash contains the recovery token
-    if (window.location.hash.includes("type=recovery")) {
+    // --- FLOW 1: PKCE (newer) - URL has ?code=xxx ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    if (code) {
+        // Exchange the code for a session first
+        const { error } = await db.auth.exchangeCodeForSession(code);
+        if (error) {
+            console.error('Code exchange error:', error);
+            alert("Invalid or expired reset link. Please try again.");
+            return;
+        }
         
-        // 1. Hide the entire standard login UI
-        document.getElementById('auth-email').classList.add('hidden');
-        document.getElementById('auth-password').classList.add('hidden');
-        document.getElementById('login-btn').classList.add('hidden');
-        document.getElementById('google-login-btn').classList.add('hidden');
-        document.querySelector('.auth-divider').classList.add('hidden');
-        document.getElementById('signup-btn').classList.add('hidden');
-        document.getElementById('forgot-password-link').classList.add('hidden');
-        
-        // 2. Show the reset password section
-        document.getElementById('reset-password-section').classList.remove('hidden');
+        // Now show the reset UI
+        showResetPasswordUI();
+        return;
     }
+    
+    // --- FLOW 2: Implicit (older) - hash has #type=recovery ---
+    if (window.location.hash.includes("type=recovery")) {
+        showResetPasswordUI();
+    }
+}
+
+// Separate the UI toggle into its own function
+function showResetPasswordUI() {
+    // Hide login elements
+    document.getElementById('auth-email').classList.add('hidden');
+    document.getElementById('auth-password').classList.add('hidden');
+    document.getElementById('login-btn').classList.add('hidden');
+    document.getElementById('google-login-btn').classList.add('hidden');
+    document.querySelector('.auth-divider').classList.add('hidden');
+    document.querySelector('.signup-text').classList.add('hidden');
+    document.getElementById('forgot-password-link').classList.add('hidden');
+    document.getElementById('signup-view').classList.add('hidden'); // ensure signup hidden too
+    
+    // Show reset section
+    document.getElementById('reset-password-section').classList.remove('hidden');
+    document.getElementById('auth-overlay').classList.remove('hidden');
 }
 
 // Handle Sign Up Click
