@@ -178,6 +178,32 @@ body {
     border: 1px solid #457b9d !important;
 }
 
+.email-otp-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #3c4043;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.email-otp-btn:hover {
+  background: #f8f9fa;
+}
+
+.email-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
 .auth-view {
     width: 100%;
     display: flex;
