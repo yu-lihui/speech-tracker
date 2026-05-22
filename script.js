@@ -105,6 +105,7 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     } else {
         // Success!
         document.getElementById('auth-overlay').classList.add('hidden');
+        document.querySelector('.container').style.display = 'block';
         document.getElementById('account-header').style.display = 'flex'; // Show the header!
 
         // NEW: Scroll to top immediately after login
