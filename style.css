@@ -238,6 +238,43 @@ body {
     font-weight: 600;
 }
 
+.password-field {
+    position: relative;
+    width: 80%;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+}
+
+.password-field .auth-input {
+    width: 100%;
+    max-width: none;
+    padding-right: 45px; /* Space for the eye button */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    padding: 5px;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    opacity: 0.8;
+}
+
+.toggle-password:active {
+    opacity: 1;
+}
+
 /* 3. NAVIGATION MENU */
 .nav-menu {
     position: sticky;
