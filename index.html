@@ -29,6 +29,23 @@
             <input type="password" id="auth-password" placeholder="Password" class="auth-input">
             <button type="button" class="toggle-password" data-target="auth-password">🙈</button>
         </div>
+
+        <button id="send-otp-btn" class="auth-btn">
+          Send One-Time Code
+        </button>
+        
+        <div id="otp-section" class="hidden">
+          <input 
+            type="text" 
+            id="otp-code" 
+            placeholder="Enter code from email" 
+            class="auth-input">
+        
+          <button id="verify-otp-btn" class="auth-btn">
+            Verify Code
+          </button>
+        </div>
+
         <p id="forgot-password-link">Forgot password?</p>
         <button id="login-btn" class="auth-btn">Login</button>
         <div class="auth-divider">OR</div>
