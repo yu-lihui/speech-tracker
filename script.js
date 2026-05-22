@@ -19,11 +19,7 @@ const { createClient } = supabase;
 const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
 const supabaseKey = 'sb_publishable_AkQZZKS2b5Ejbo5L5wL38Q_K2AL_JIW';
 
-const db = createClient(supabaseUrl, supabaseKey, {
-    auth: {
-        detectSessionInUrl: !shouldShowReset
-    }
-});
+const db = createClient(supabaseUrl, supabaseKey);
 
 // ============================================================
 // STEP 3: Auth functions
@@ -64,32 +60,51 @@ function showResetPasswordUI() {
 }
 
 // ============================================================
-// STEP 4: Main init
+// STEP 4: Main init (handles BOTH reset and normal flows)
 // ============================================================
 
 (async () => {
     if (shouldShowReset) {
-        const code = new URL(initialUrl).searchParams.get('code');
-        
-        if (code) {
-            const { data, error } = await db.auth.exchangeCodeForSession(code);
-            
-            if (error || !data?.session) {
-                alert("This reset link is invalid or has expired.");
-            } else {
-                await db.auth.setSession({
-                    access_token: data.session.access_token,
-                    refresh_token: data.session.refresh_token
-                });
-                showResetPasswordUI();
-            }
+        // Retry until Supabase auto-exchange finishes (max 5 seconds)
+        let user = null;
+        for (let i = 0; i < 50; i++) {
+            await new Promise(r => setTimeout(r, 100));
+            const { data: { user: u } } = await db.auth.getUser();
+            user = u;
+            if (user) break;
         }
         
+        if (user) {
+            showResetPasswordUI();
+        } else {
+            alert("This reset link is invalid or has expired.");
+        }
         window.history.replaceState({}, document.title, window.location.pathname);
         return;
     }
     
-    await checkUser();
+    // Normal flow: retry until session is ready (for Google OAuth auto-exchange)
+    let user = null;
+    for (let i = 0; i < 50; i++) {
+        await new Promise(r => setTimeout(r, 100));
+        const { data: { user: u } } = await db.auth.getUser();
+        user = u;
+        if (user) break;
+    }
+    
+    if (user) {
+        // User logged in -- show tracker
+        const authOverlay = document.getElementById('auth-overlay');
+        const mainApp = document.querySelector('.container');
+        const header = document.getElementById('account-header');
+        
+        authOverlay.classList.add('hidden');
+        mainApp.style.display = 'block';
+        if (header) header.style.display = 'flex';
+        document.getElementById('user-display-email').textContent = user.email;
+        loadHistory();
+    }
+    // If no user, login UI is already visible (default HTML state)
 })();
 
 // --- SIGN UP ---
@@ -102,7 +117,10 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
         return;
     }
 
-    const { data, error } = await db.auth.signUp({ email, password });
+    const { data, error } = await db.auth.signUp({
+        email: email,
+        password: password,
+    });
 
     if (error) {
         alert("Sign up error: " + error.message);
@@ -181,6 +199,7 @@ const dashboardView = document.querySelector('#dashboard-view');
 // --- CLOUD FUNCTIONS ---
 async function loadHistory() {
     const { data: { user } } = await db.auth.getUser();
+    
     if (!user) return;
 
     const { data, error } = await db
@@ -198,13 +217,15 @@ async function loadHistory() {
 }
 
 async function saveToCloud(sessionObject) {
-    const { error } = await db.from('sessions').insert([sessionObject]);
+    const { error } = await db
+        .from('sessions')
+        .insert([sessionObject]);
 
     if (error) {
         console.error('Cloud Save Error:', error);
         alert("Failed to save to cloud. Check if your column names match!");
     } else {
-        loadHistory();
+        loadHistory(); 
     }
 }
 
@@ -212,7 +233,10 @@ async function deleteFromCloud(id) {
     allSessions = allSessions.filter(s => s.id !== id);
     redrawPills();
 
-    const { error } = await db.from('sessions').delete().eq('id', id);
+    const { error } = await db
+        .from('sessions')
+        .delete()
+        .eq('id', id);
 
     if (error) {
         console.error('Delete error:', error);
@@ -300,38 +324,38 @@ function displayClientHistory(clientName) {
         groups[entry.sound].push(entry);
     });
 
-    for (const sound in groups) {
-        const card = document.createElement('div');
-        card.className = 'goal-card';
+   for (const sound in groups) {
+    const card = document.createElement('div');
+    card.className = 'goal-card';
 
-        let rows = groups[sound]
-            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-            .map(entry => `
-                <tr class="goal-row">
-                    <td class="cell-level">${escapeHtml(entry.level)}</td>
-                    <td class="cell-cues">${escapeHtml(entry.prompt || 'Indpt')}</td>
-                    <td class="cell-acc" style="color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
-                        ${entry.accuracy}%
-                    </td>
-                    <td class="cell-date">${entry.created_at ? new Date(entry.created_at).toLocaleDateString('en-GB') : 'No date'}</td>
+    let rows = groups[sound]
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .map(entry => `
+            <tr class="goal-row">
+                <td class="cell-level">${escapeHtml(entry.level)}</td>
+                <td class="cell-cues">${escapeHtml(entry.prompt || 'Indpt')}</td>
+                <td class="cell-acc" style="color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
+                    ${entry.accuracy}%
+                </td>
+                <td class="cell-date">${entry.created_at ? new Date(entry.created_at).toLocaleDateString('en-GB') : 'No date'}</td>
+            </tr>
+        `).join('');
+
+    card.innerHTML = `
+        <div class="goal-header">${escapeHtml(sound)}</div>
+        <table class="goal-table">
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Cues</th>
+                    <th>Acc%</th>
+                    <th>Date</th>
                 </tr>
-            `).join('');
-
-        card.innerHTML = `
-            <div class="goal-header">${escapeHtml(sound)}</div>
-            <table class="goal-table">
-                <thead>
-                    <tr>
-                        <th>Level</th>
-                        <th>Cues</th>
-                        <th>Acc%</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>`;
-        container.appendChild(card);
-    }
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+    container.appendChild(card);
+}
 }
 
 // --- EVENT LISTENERS ---
@@ -400,7 +424,8 @@ document.getElementById('prompt-chips').addEventListener('click', (e) => {
         e.target.classList.toggle('selected');
         
         if (e.target.getAttribute('data-value') === 'Indpt' && e.target.classList.contains('selected')) {
-            document.querySelectorAll('.chip').forEach(chip => {
+            const allChips = document.querySelectorAll('.chip');
+            allChips.forEach(chip => {
                 if (chip.getAttribute('data-value') !== 'Indpt') {
                     chip.classList.remove('selected');
                 }
