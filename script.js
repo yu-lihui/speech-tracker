@@ -21,6 +21,59 @@ const supabaseKey = 'sb_publishable_AkQZZKS2b5Ejbo5L5wL38Q_K2AL_JIW';
 
 const db = createClient(supabaseUrl, supabaseKey);
 
+function showLoginUI() {
+  document.getElementById('auth-overlay').classList.remove('hidden');
+
+  const mainApp = document.querySelector('.container');
+  mainApp.classList.add('hidden');
+  mainApp.style.display = 'none';
+
+  const header = document.getElementById('account-header');
+  header.classList.add('hidden');
+  header.style.display = 'none';
+}
+
+function showAppUI(user) {
+  document.getElementById('auth-overlay').classList.add('hidden');
+
+  const mainApp = document.querySelector('.container');
+  mainApp.classList.remove('hidden');
+  mainApp.style.display = 'block';
+
+  const header = document.getElementById('account-header');
+  header.classList.remove('hidden');
+  header.style.display = 'flex';
+
+  document.getElementById('user-display-email').textContent = user.email || '';
+  window.scrollTo(0, 0);
+  loadHistory();
+}
+
+function showResetPasswordUI() {
+  const authOverlay = document.getElementById('auth-overlay');
+  const mainApp = document.querySelector('.container');
+  const header = document.getElementById('account-header');
+
+  authOverlay.classList.remove('hidden');
+  mainApp.classList.add('hidden');
+  mainApp.style.display = 'none';
+  header.classList.add('hidden');
+  header.style.display = 'none';
+
+  document.getElementById('login-password-wrapper').classList.add('hidden');
+  document.getElementById('auth-email').classList.add('hidden');
+  document.getElementById('auth-password').classList.add('hidden');
+  document.getElementById('login-btn').classList.add('hidden');
+  document.getElementById('google-login-btn').classList.add('hidden');
+  document.querySelector('.auth-divider').classList.add('hidden');
+  document.querySelector('.signup-text').classList.add('hidden');
+  document.getElementById('forgot-password-link').classList.add('hidden');
+  document.getElementById('signup-view').classList.add('hidden');
+
+  document.querySelector('#auth-overlay .logo-container').classList.remove('hidden');
+  document.getElementById('reset-password-section').classList.remove('hidden');
+}
+
 // ============================================================
 // STEP 3: Auth functions
 // ============================================================
@@ -62,49 +115,45 @@ function showResetPasswordUI() {
 // ============================================================
 // STEP 4: Main init (handles BOTH reset and normal flows)
 // ============================================================
+let recoveryMode = false;
+
+db.auth.onAuthStateChange((event, session) => {
+  console.log('Auth event:', event);
+
+  if (event === 'PASSWORD_RECOVERY') {
+    recoveryMode = true;
+    showResetPasswordUI();
+    return;
+  }
+
+  if (event === 'SIGNED_IN' && session?.user && !recoveryMode) {
+    showAppUI(session.user);
+  }
+
+  if (event === 'SIGNED_OUT') {
+    showLoginUI();
+  }
+});
 
 (async () => {
-    if (shouldShowReset) {
-        // Retry until Supabase auto-exchange finishes (max 5 seconds)
-        let user = null;
-        for (let i = 0; i < 50; i++) {
-            await new Promise(r => setTimeout(r, 100));
-            const { data: { user: u } } = await db.auth.getUser();
-            user = u;
-            if (user) break;
-        }
-        
-        if (user) {
-            showResetPasswordUI();
-        } else {
-            alert("This reset link is invalid or has expired.");
-        }
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return;
-    }
-    
-    // Normal flow: retry until session is ready (for Google OAuth auto-exchange)
-    let user = null;
-    for (let i = 0; i < 50; i++) {
-        await new Promise(r => setTimeout(r, 100));
-        const { data: { user: u } } = await db.auth.getUser();
-        user = u;
-        if (user) break;
-    }
-    
-    if (user) {
-        // User logged in -- show tracker
-        const authOverlay = document.getElementById('auth-overlay');
-        const mainApp = document.querySelector('.container');
-        const header = document.getElementById('account-header');
-        
-        authOverlay.classList.add('hidden');
-        mainApp.style.display = 'block';
-        if (header) header.style.display = 'flex';
-        document.getElementById('user-display-email').textContent = user.email;
-        loadHistory();
-    }
-    // If no user, login UI is already visible (default HTML state)
+  showLoginUI();
+
+  // Give Supabase a short moment to emit PASSWORD_RECOVERY if this is a reset link.
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  if (recoveryMode) return;
+
+  const {
+    data: { session }
+  } = await db.auth.getSession();
+
+  if (session?.user) {
+    showAppUI(session.user);
+  } else {
+    showLoginUI();
+  }
+
+  window.history.replaceState({}, document.title, window.location.pathname);
 })();
 
 // --- SIGN UP ---
@@ -131,22 +180,20 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
 
 // --- LOGIN ---
 document.getElementById('login-btn').addEventListener('click', async () => {
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
 
-    const { error } = await db.auth.signInWithPassword({ email, password });
+  const { error } = await db.auth.signInWithPassword({ email, password });
 
-    if (error) {
-        alert("Login failed: " + error.message);
-    } else {
-        document.getElementById('auth-overlay').classList.add('hidden');
-        document.querySelector('.container').style.display = 'block';
-        document.getElementById('account-header').style.display = 'flex';
-        window.scrollTo(0, 0);
-        const { data: { user } } = await db.auth.getUser();
-        document.getElementById('user-display-email').textContent = user.email;
-        loadHistory();
-    }
+  if (error) {
+    alert("Login failed: " + error.message);
+  } else {
+    const {
+      data: { user }
+    } = await db.auth.getUser();
+
+    showAppUI(user);
+  }
 });
 
 // --- TOGGLES ---
@@ -450,29 +497,34 @@ document.getElementById('header-logout-btn').addEventListener('click', async () 
 });
 
 document.getElementById('google-login-btn').addEventListener('click', async () => {
-    const { error } = await db.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin }
-    });
-    if (error) alert("Google Login Error: " + error.message);
+  const redirectUrl = window.location.origin + window.location.pathname;
+
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: redirectUrl
+    }
+  });
+
+  if (error) alert("Google Login Error: " + error.message);
 });
 
 document.getElementById('forgot-password-link').addEventListener('click', async () => {
-    const email = document.getElementById('auth-email').value;
-    if (!email) {
-        alert("Please enter your email address.");
-        return;
-    }
+  const email = document.getElementById('auth-email').value;
 
-    // SET FLAG for reset detection on next page load
-    sessionStorage.setItem('reset_requested', 'true');
+  if (!email) {
+    alert("Please enter your email address.");
+    return;
+  }
 
-    const { error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin,
-    });
+  const redirectUrl = window.location.origin + window.location.pathname;
 
-    if (error) alert("Error: " + error.message);
-    else alert("Check your email!");
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectUrl
+  });
+
+  if (error) alert("Error: " + error.message);
+  else alert("Check your email!");
 });
 
 document.getElementById('update-password-btn').addEventListener('click', async () => {
