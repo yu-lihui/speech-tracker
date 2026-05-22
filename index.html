@@ -24,7 +24,10 @@
         </div>
         
         <input type="email" id="auth-email" placeholder="Email" class="auth-input">
-        <input type="password" id="auth-password" placeholder="Password" class="auth-input">
+        <div class="password-field">
+            <input type="password" id="auth-password" placeholder="Password" class="auth-input">
+            <button type="button" class="toggle-password" data-target="auth-password">👁</button>
+        </div>
         <p id="forgot-password-link">Forgot password?</p>
         <button id="login-btn" class="auth-btn">Login</button>
         <div class="auth-divider">OR</div>
@@ -37,7 +40,10 @@
         <div id="signup-view" class="auth-view hidden">
         <h3 class="auth-title">create account</h3>
         <input type="email" id="signup-email" class="auth-input" placeholder="email">
-        <input type="password" id="signup-password" class="auth-input" placeholder="password">
+        <div class="password-field">
+            <input type="password" id="signup-password" class="auth-input" placeholder="password">
+            <button type="button" class="toggle-password" data-target="signup-password">👁</button>
+        </div>
         <button id="signup-btn" class="auth-btn">create account</button>
         
         <p class="signup-text">already have an account? <span id="go-to-login">login</span></p>
@@ -45,7 +51,10 @@
         
         <div id="reset-password-section" class="hidden">
             <h3>create new password</h3>
-            <input type="password" id="new-password" placeholder="New Password" class="auth-input">
+            <div class="password-field">
+                <input type="password" id="new-password" placeholder="New Password" class="auth-input">
+                <button type="button" class="toggle-password" data-target="new-password">👁</button>
+            </div>
             <button id="update-password-btn" class="auth-btn">Update Password</button>
         </div>
     </div>
