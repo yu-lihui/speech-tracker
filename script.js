@@ -562,8 +562,20 @@ document.getElementById('update-password-btn').addEventListener('click', async (
 });
 
 downloadCsvBtn.addEventListener('click', () => {
-  if (!allSessions || allSessions.length === 0) {
-    alert("No session data to download yet.");
+  const clientName = searchInput.value.trim();
+
+  if (!clientName) {
+    alert("Please type a client name in the Progress Search box first.");
+    searchInput.focus();
+    return;
+  }
+
+  const clientSessions = allSessions.filter(session =>
+    (session.client_name || '').toLowerCase() === clientName.toLowerCase()
+  );
+
+  if (clientSessions.length === 0) {
+    alert(`No saved sessions found for "${clientName}".`);
     return;
   }
 
@@ -578,7 +590,7 @@ downloadCsvBtn.addEventListener('click', () => {
     "Date"
   ];
 
-  const rows = allSessions.map(session => [
+  const rows = clientSessions.map(session => [
     session.client_name || "",
     session.sound || "",
     session.level || "",
@@ -609,8 +621,11 @@ downloadCsvBtn.addEventListener('click', () => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
 
+  const safeClientName = clientName.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+
   link.href = url;
-  link.download = "speech-tracker-report.csv";
+  link.download = `${safeClientName}_speech_tracker_report.csv`;
+
   document.body.appendChild(link);
   link.click();
 
