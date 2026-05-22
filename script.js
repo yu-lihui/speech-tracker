@@ -1,36 +1,32 @@
 // Initialize Supabase correctly for browser use
-const { createClient } = supabase; // This grabs the tool from the script tag
+const { createClient } = supabase;
 const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
 const supabaseKey = 'sb_publishable_AkQZZKS2b5Ejbo5L5wL38Q_K2AL_JIW';
 
 const db = createClient(supabaseUrl, supabaseKey);
 
-// --- NEW: AUTHENTICATION LOGIC ---
+// --- AUTHENTICATION LOGIC ---
 async function checkUser() {
     const { data: { user } } = await db.auth.getUser();
-    const mainApp = document.querySelector('.container'); // Your tracker box
+    const mainApp = document.querySelector('.container');
     const header = document.getElementById('account-header');
     const authOverlay = document.getElementById('auth-overlay');
 
     if (user) {
-        // USER LOGGED IN
         authOverlay.classList.add('hidden');
-        mainApp.style.display = 'block'; // Show tracker
+        mainApp.style.display = 'block';
         if (header) header.style.display = 'flex';
         document.getElementById('user-display-email').textContent = user.email;
         loadHistory();
     } else {
-        // USER LOGGED OUT
         authOverlay.classList.remove('hidden');
-        mainApp.style.display = 'none';  // LITERALLY remove the tracker from the page
+        mainApp.style.display = 'none';
         if (header) header.style.display = 'none';
     }
 }
 
 function showResetPasswordUI() {
     document.getElementById('login-password-wrapper').classList.add('hidden');
-    
-    // Hide login elements
     document.getElementById('auth-email').classList.add('hidden');
     document.getElementById('auth-password').classList.add('hidden');
     document.getElementById('login-btn').classList.add('hidden');
@@ -39,14 +35,47 @@ function showResetPasswordUI() {
     document.querySelector('.signup-text').classList.add('hidden');
     document.getElementById('forgot-password-link').classList.add('hidden');
     document.getElementById('signup-view').classList.add('hidden');
-    
-    // Show reset section
     document.querySelector('.logo-container').classList.remove('hidden');
     document.getElementById('reset-password-section').classList.remove('hidden');
     document.getElementById('auth-overlay').classList.remove('hidden');
 }
 
-// Handle Sign Up Click
+// Check URL for recovery flow
+const urlParams = new URLSearchParams(window.location.search);
+const recoveryCode = urlParams.get('code');
+const isResetFlow = urlParams.get('flow') === 'reset';
+
+// Main auth + recovery flow
+(async () => {
+    if (isResetFlow && recoveryCode) {
+        const { data, error } = await db.auth.exchangeCodeForSession(recoveryCode);
+        
+        if (error || !data?.session) {
+            alert("This reset link is invalid or has expired.");
+        } else {
+            await db.auth.setSession({
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token
+            });
+            showResetPasswordUI();
+        }
+        
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    }
+    
+    if (recoveryCode) {
+        await new Promise(r => setTimeout(r, 300));
+    }
+    
+    if (recoveryCode) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    await checkUser();
+})();
+
+// --- SIGN UP ---
 document.getElementById('signup-btn').addEventListener('click', async () => {
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
@@ -56,10 +85,7 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
         return;
     }
 
-    const { data, error } = await db.auth.signUp({
-        email: email,
-        password: password,
-    });
+    const { data, error } = await db.auth.signUp({ email, password });
 
     if (error) {
         alert("Sign up error: " + error.message);
@@ -68,6 +94,7 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
     }
 });
 
+// --- LOGIN ---
 document.getElementById('login-btn').addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
@@ -77,22 +104,19 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     if (error) {
         alert("Login failed: " + error.message);
     } else {
-        // Success!
         document.getElementById('auth-overlay').classList.add('hidden');
         document.querySelector('.container').style.display = 'block';
         document.getElementById('account-header').style.display = 'flex';
-
         window.scrollTo(0, 0);
-        
         const { data: { user } } = await db.auth.getUser();
         document.getElementById('user-display-email').textContent = user.email;
         loadHistory();
     }
 });
 
+// --- SIGNUP TOGGLE ---
 document.getElementById('signup-toggle').addEventListener('click', () => {
     document.getElementById('login-password-wrapper').classList.add('hidden');
-    
     document.getElementById('signup-view').classList.remove('hidden');
     document.getElementById('auth-email').classList.add('hidden');
     document.getElementById('auth-password').classList.add('hidden');
@@ -115,73 +139,11 @@ document.getElementById('go-to-login').addEventListener('click', () => {
     document.getElementById('google-login-btn').classList.remove('hidden');
 });
 
-// Detect recovery links BEFORE checkUser runs
-const urlParams = new URLSearchParams(window.location.search);
-const recoveryCode = urlParams.get('code');
-const isRecoveryUrl = recoveryCode !== null || window.location.hash.includes('type=recovery');
-
-if (isRecoveryUrl) {
-    sessionStorage.setItem('is_recovery', 'true');
-    window.history.replaceState({}, document.title, window.location.pathname);
-}
-
-// Run auth check + recovery in sequence
-(async () => {
-    // Step 1: Normal auth check (shows tracker if logged in via Google, etc.)
-    await checkUser();
-    
-    // Step 2: Handle password recovery ONLY if not already logged in
-    if (sessionStorage.getItem('is_recovery') === 'true') {
-        sessionStorage.removeItem('is_recovery');
-        
-        // Check if user is already logged in (Google OAuth, etc.)
-        const { data: { user } } = await db.auth.getUser();
-        
-        if (!user && recoveryCode) {
-            // PKCE flow: exchange code and set session
-            const { data, error } = await db.auth.exchangeCodeForSession(recoveryCode);
-            
-            if (error) {
-                alert("This reset link is invalid or has expired.");
-                return;
-            }
-            
-            // Explicitly persist session
-            if (data?.session) {
-                await db.auth.setSession({
-                    access_token: data.session.access_token,
-                    refresh_token: data.session.refresh_token
-                });
-            }
-            
-            // Show reset UI
-            const authOverlay = document.getElementById('auth-overlay');
-            const mainApp = document.querySelector('.container');
-            const header = document.getElementById('account-header');
-            
-            authOverlay.classList.remove('hidden');
-            mainApp.style.display = 'none';
-            if (header) header.style.display = 'none';
-            
-            showResetPasswordUI();
-        }
-    }
-    
-    // Older implicit flow (hash-based)
-    if (window.location.hash.includes('type=recovery')) {
-        const { data: { user } } = await db.auth.getUser();
-        if (!user) {
-            showResetPasswordUI();
-        }
-    }
-})();
-
-// 1. Memory Buckets
+// --- APP STATE ---
 let correctCount = 0;
 let incorrectCount = 0;
-let allSessions = []; 
+let allSessions = [];
 
-// 2. HTML Element Selectors
 const percentageDisplay = document.querySelector('.percentage');
 const btnCorrect = document.querySelector('.correct');
 const btnIncorrect = document.querySelector('.incorrect');
@@ -199,12 +161,9 @@ const navDashboard = document.querySelector('#nav-dashboard');
 const trackerView = document.querySelector('#tracker-view');
 const dashboardView = document.querySelector('#dashboard-view');
 
-// 3. CLOUD FUNCTIONS
-
-// LOAD data from Supabase
+// --- CLOUD FUNCTIONS ---
 async function loadHistory() {
     const { data: { user } } = await db.auth.getUser();
-    
     if (!user) return;
 
     const { data, error } = await db
@@ -221,41 +180,31 @@ async function loadHistory() {
     }
 }
 
-// SAVE data to Supabase
 async function saveToCloud(sessionObject) {
-    const { error } = await db
-        .from('sessions')
-        .insert([sessionObject]);
+    const { error } = await db.from('sessions').insert([sessionObject]);
 
     if (error) {
         console.error('Cloud Save Error:', error);
         alert("Failed to save to cloud. Check if your column names match!");
     } else {
-        loadHistory(); 
+        loadHistory();
     }
 }
 
-// DELETE data from Supabase
 async function deleteFromCloud(id) {
-    // 1. Immediate UI update (makes the app feel snappy)
     allSessions = allSessions.filter(s => s.id !== id);
     redrawPills();
 
-    // 2. Delete from the Cloud
-    const { error } = await db
-        .from('sessions')
-        .delete()
-        .eq('id', id);
+    const { error } = await db.from('sessions').delete().eq('id', id);
 
     if (error) {
         console.error('Delete error:', error);
         alert("Could not delete from cloud: " + error.message);
-        loadHistory(); // Reload from cloud to restore the pill if delete failed
+        loadHistory();
     }
 }
 
-// 4. CORE APP LOGIC
-
+// --- CORE APP LOGIC ---
 function updateAccuracy() {
     let total = correctCount + incorrectCount;
     let accuracy = (total > 0) ? Math.round((correctCount / total) * 100) : 0;
@@ -284,9 +233,8 @@ function redrawPills() {
         const pill = document.createElement('div');
         pill.classList.add('history-pill');
 
-        const dateObj = new Date(session.created_at);
         const displayDate = session.created_at
-            ? dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+            ? new Date(session.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
             : 'No date';
 
         pill.innerHTML = `
@@ -294,11 +242,9 @@ function redrawPills() {
                 <div class="pill-info">
                     <strong class="pill-client">${escapeHtml(session.client_name)}</strong>: 
                     <strong class="pill-sound">${escapeHtml(session.sound)}</strong>
-                    
                     <div class="pill-details">
                         <span>${escapeHtml(session.level)}</span> | Cues: <span>${escapeHtml(session.prompt)}</span>
                     </div>
-                    
                     <div class="pill-date">${displayDate}</div>
                 </div>
                 <div class="pill-accuracy">
@@ -371,8 +317,7 @@ function displayClientHistory(clientName) {
     }
 }
 
-// 5. EVENT LISTENERS
-
+// --- EVENT LISTENERS ---
 btnCorrect.addEventListener('click', () => { correctCount++; updateAccuracy(); });
 btnIncorrect.addEventListener('click', () => { incorrectCount++; updateAccuracy(); });
 btnReset.addEventListener('click', resetAll);
@@ -389,7 +334,6 @@ saveBtn.addEventListener('click', async () => {
     const currentAccuracy = updateAccuracy();
     const soundVal = soundInput.value || "General";
     const positionVal = document.getElementById('speech-position').value || "";
-
     const combinedSound = `${soundVal} ${positionVal}`.trim();
 
     const newSession = {
@@ -422,7 +366,6 @@ navTracker.addEventListener('click', () => {
     navDashboard.classList.remove('active');
     trackerView.classList.remove('hidden');
     dashboardView.classList.add('hidden');
-
     document.getElementById('all-goals-container').innerHTML = "";
     document.getElementById('search-client').value = "";
     document.getElementById('client-history-results').innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see progress history.</p>`;
@@ -435,14 +378,12 @@ navDashboard.addEventListener('click', () => {
     trackerView.classList.add('hidden');
 });
 
-// --- CUE CHIPS LOGIC ---
 document.getElementById('prompt-chips').addEventListener('click', (e) => {
     if (e.target.classList.contains('chip')) {
         e.target.classList.toggle('selected');
         
         if (e.target.getAttribute('data-value') === 'Indpt' && e.target.classList.contains('selected')) {
-            const allChips = document.querySelectorAll('.chip');
-            allChips.forEach(chip => {
+            document.querySelectorAll('.chip').forEach(chip => {
                 if (chip.getAttribute('data-value') !== 'Indpt') {
                     chip.classList.remove('selected');
                 }
@@ -451,14 +392,12 @@ document.getElementById('prompt-chips').addEventListener('click', (e) => {
     }
 });
 
-// Helper function to see which chips are selected when saving
 function getSelectedCues() {
     const selected = Array.from(document.querySelectorAll('.chip.selected'))
         .map(chip => chip.getAttribute('data-value'));
     return selected.length > 0 ? selected.join(', ') : 'None';
 }
 
-// Logout Logic for the top header button
 document.getElementById('header-logout-btn').addEventListener('click', async () => {
     const confirmLogout = confirm("Are you sure you want to log out?");
     if (confirmLogout) {
@@ -468,7 +407,6 @@ document.getElementById('header-logout-btn').addEventListener('click', async () 
     }
 });
 
-// NEW: Google Login
 document.getElementById('google-login-btn').addEventListener('click', async () => {
     const { error } = await db.auth.signInWithOAuth({
         provider: 'google',
@@ -500,7 +438,6 @@ document.getElementById('update-password-btn').addEventListener('click', async (
         return;
     }
     
-    // Verify session exists before updating
     const { data: { session } } = await db.auth.getSession();
     if (!session) {
         alert("Session expired. Please request a new reset link.");
