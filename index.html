@@ -30,25 +30,27 @@
             <button type="button" class="toggle-password" data-target="auth-password">🙈</button>
         </div>
 
+        <p id="forgot-password-link">Forgot password?</p>
+        <button id="login-btn" class="auth-btn">Login</button>
+       
+        <div class="auth-divider">OR</div>
         <button id="send-otp-btn" class="auth-btn">
-          Send One-Time Code
+          Login with one-time code
         </button>
         
         <div id="otp-section" class="hidden">
           <input 
             type="text" 
             id="otp-code" 
-            placeholder="Enter code from email" 
-            class="auth-input">
+            placeholder="Enter code" 
+            class="auth-input"
+          >
         
           <button id="verify-otp-btn" class="auth-btn">
             Verify Code
           </button>
         </div>
 
-        <p id="forgot-password-link">Forgot password?</p>
-        <button id="login-btn" class="auth-btn">Login</button>
-        <div class="auth-divider">OR</div>
         <button id="google-login-btn" class="google-btn">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="google-icon" alt="Google">
                 Login with Google
