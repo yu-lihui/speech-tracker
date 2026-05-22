@@ -242,6 +242,7 @@ const navTracker = document.querySelector('#nav-tracker');
 const navDashboard = document.querySelector('#nav-dashboard');
 const trackerView = document.querySelector('#tracker-view');
 const dashboardView = document.querySelector('#dashboard-view');
+const downloadCsvBtn = document.querySelector('#download-csv');
 
 // --- CLOUD FUNCTIONS ---
 async function loadHistory() {
@@ -559,6 +560,64 @@ document.getElementById('update-password-btn').addEventListener('click', async (
         window.location.href = window.location.origin;
     }
 });
+
+downloadCsvBtn.addEventListener('click', () => {
+  if (!allSessions || allSessions.length === 0) {
+    alert("No session data to download yet.");
+    return;
+  }
+
+  const headers = [
+    "Client Name",
+    "Sound",
+    "Level",
+    "Cues",
+    "Correct",
+    "Incorrect",
+    "Accuracy",
+    "Date"
+  ];
+
+  const rows = allSessions.map(session => [
+    session.client_name || "",
+    session.sound || "",
+    session.level || "",
+    session.prompt || "",
+    session.correct ?? "",
+    session.incorrect ?? "",
+    session.accuracy ?? "",
+    session.created_at
+      ? new Date(session.created_at).toLocaleDateString('en-GB')
+      : ""
+  ]);
+
+  const csvContent = [
+    headers,
+    ...rows
+  ]
+    .map(row =>
+      row
+        .map(value => `"${String(value).replace(/"/g, '""')}"`)
+        .join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csvContent], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "speech-tracker-report.csv";
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+});
+
 
 // Password visibility toggle
 document.querySelectorAll('.toggle-password').forEach(btn => {
