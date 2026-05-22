@@ -1,11 +1,34 @@
-// Initialize Supabase correctly for browser use
+// ============================================================
+// STEP 1: Detect flows BEFORE Supabase touches the URL
+// ============================================================
+
+const initialUrl = window.location.href;
+const hasCode = initialUrl.includes('code=');
+const isResetFlow = sessionStorage.getItem('reset_requested') === 'true';
+const shouldShowReset = isResetFlow && hasCode;
+
+if (shouldShowReset) {
+    sessionStorage.removeItem('reset_requested');
+}
+
+// ============================================================
+// STEP 2: Initialize Supabase
+// ============================================================
+
 const { createClient } = supabase;
 const supabaseUrl = 'https://meypivmccykkqtazcrma.supabase.co';
 const supabaseKey = 'sb_publishable_AkQZZKS2b5Ejbo5L5wL38Q_K2AL_JIW';
 
-const db = createClient(supabaseUrl, supabaseKey);
+const db = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        detectSessionInUrl: !shouldShowReset
+    }
+});
 
-// --- AUTHENTICATION LOGIC ---
+// ============================================================
+// STEP 3: Auth functions
+// ============================================================
+
 async function checkUser() {
     const { data: { user } } = await db.auth.getUser();
     const mainApp = document.querySelector('.container');
@@ -40,36 +63,30 @@ function showResetPasswordUI() {
     document.getElementById('auth-overlay').classList.remove('hidden');
 }
 
-// Check URL for recovery flow
-const urlParams = new URLSearchParams(window.location.search);
-const recoveryCode = urlParams.get('code');
-const isResetFlow = urlParams.get('flow') === 'reset';
+// ============================================================
+// STEP 4: Main init
+// ============================================================
 
-// Main auth + recovery flow
 (async () => {
-    if (isResetFlow && recoveryCode) {
-        const { data, error } = await db.auth.exchangeCodeForSession(recoveryCode);
+    if (shouldShowReset) {
+        const code = new URL(initialUrl).searchParams.get('code');
         
-        if (error || !data?.session) {
-            alert("This reset link is invalid or has expired.");
-        } else {
-            await db.auth.setSession({
-                access_token: data.session.access_token,
-                refresh_token: data.session.refresh_token
-            });
-            showResetPasswordUI();
+        if (code) {
+            const { data, error } = await db.auth.exchangeCodeForSession(code);
+            
+            if (error || !data?.session) {
+                alert("This reset link is invalid or has expired.");
+            } else {
+                await db.auth.setSession({
+                    access_token: data.session.access_token,
+                    refresh_token: data.session.refresh_token
+                });
+                showResetPasswordUI();
+            }
         }
         
         window.history.replaceState({}, document.title, window.location.pathname);
         return;
-    }
-    
-    if (recoveryCode) {
-        await new Promise(r => setTimeout(r, 300));
-    }
-    
-    if (recoveryCode) {
-        window.history.replaceState({}, document.title, window.location.pathname);
     }
     
     await checkUser();
@@ -114,7 +131,7 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     }
 });
 
-// --- SIGNUP TOGGLE ---
+// --- TOGGLES ---
 document.getElementById('signup-toggle').addEventListener('click', () => {
     document.getElementById('login-password-wrapper').classList.add('hidden');
     document.getElementById('signup-view').classList.remove('hidden');
@@ -421,6 +438,9 @@ document.getElementById('forgot-password-link').addEventListener('click', async 
         alert("Please enter your email address.");
         return;
     }
+
+    // SET FLAG for reset detection on next page load
+    sessionStorage.setItem('reset_requested', 'true');
 
     const { error } = await db.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin,
