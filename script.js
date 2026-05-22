@@ -65,7 +65,7 @@ function showResetPasswordUI() {
     document.getElementById('signup-view').classList.add('hidden'); // ensure signup hidden too
     
     // Show reset section
-    document.querySelector('.logo-container').classList.add('hidden');
+    document.querySelector('.logo-container').classList.remove('hidden');
     document.getElementById('reset-password-section').classList.remove('hidden');
     document.getElementById('auth-overlay').classList.remove('hidden');
 }
@@ -506,8 +506,25 @@ document.getElementById('update-password-btn').addEventListener('click', async (
     if (error) {
         alert("Failed to update password: " + error.message);
     } else {
+        document.getElementById('reset-password-section').classList.add('hidden');
         alert("Password updated! Please log in with your new password.");
         // Clear URL and go back to login
         window.location.href = window.location.origin;
     }
+});
+
+    // Password visibility toggle
+document.querySelectorAll('.toggle-password').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const inputId = btn.getAttribute('data-target');
+        const input = document.getElementById(inputId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁';
+        }
+    });
 });
