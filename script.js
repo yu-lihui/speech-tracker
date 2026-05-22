@@ -411,33 +411,41 @@ btnIncorrect.addEventListener('click', () => { incorrectCount++; updateAccuracy(
 btnReset.addEventListener('click', resetAll);
 
 saveBtn.addEventListener('click', async () => {
-    const { data: { user } } = await db.auth.getUser();
-    
-    if (!user) {
-        alert("Session expired. Please log in again.");
-        window.location.reload();
-        return;
-    }
+  const { data: { user } } = await db.auth.getUser();
 
-    const currentAccuracy = updateAccuracy();
-    const soundVal = soundInput.value || "General";
-    const positionVal = document.getElementById('speech-position').value || "";
-    const combinedSound = `${soundVal} ${positionVal}`.trim();
+  if (!user) {
+    alert("Session expired.\nPlease log in again.");
+    window.location.reload();
+    return;
+  }
 
-    const newSession = {
-        client_name: clientInput.value || "Unknown",
-        sound: combinedSound, 
-        level: levelInput.value,
-        prompt: getSelectedCues(),
-        correct: correctCount,
-        incorrect: incorrectCount,
-        accuracy: currentAccuracy,
-        user_id: user.id 
-    };
+  const clientName = clientInput.value.trim();
 
-    await saveToCloud(newSession);
-    alert(`Session saved!`);
-    resetAll();
+  if (!clientName) {
+    alert("Please enter the client name before saving.");
+    clientInput.focus();
+    return;
+  }
+
+  const currentAccuracy = updateAccuracy();
+  const soundVal = soundInput.value || "General";
+  const positionVal = document.getElementById('speech-position').value || "";
+  const combinedSound = `${soundVal} ${positionVal}`.trim();
+
+  const newSession = {
+    client_name: clientName,
+    sound: combinedSound,
+    level: levelInput.value,
+    prompt: getSelectedCues(),
+    correct: correctCount,
+    incorrect: incorrectCount,
+    accuracy: currentAccuracy,
+    user_id: user.id
+  };
+
+  await saveToCloud(newSession);
+  alert(`Session saved!`);
+  resetAll();
 });
 
 searchInput.addEventListener('input', () => {
