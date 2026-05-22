@@ -17,6 +17,7 @@ async function checkUser() {
         authOverlay.classList.add('hidden');
         mainApp.style.display = 'block'; // Show tracker
         if (header) header.style.display = 'flex';
+        document.getElementById('user-display-email').textContent = user.email; // ADD THIS
         loadHistory();
     } else {
         // USER LOGGED OUT
@@ -64,6 +65,7 @@ function showResetPasswordUI() {
     document.getElementById('signup-view').classList.add('hidden'); // ensure signup hidden too
     
     // Show reset section
+    document.querySelector('.logo-container').classList.add('hidden');
     document.getElementById('reset-password-section').classList.remove('hidden');
     document.getElementById('auth-overlay').classList.remove('hidden');
 }
@@ -134,9 +136,45 @@ document.getElementById('go-to-login').addEventListener('click', () => {
     document.getElementById('google-login-btn').classList.remove('hidden');
 });
 
-// Run this check immediately
+// Detect recovery links BEFORE checkUser runs
+const urlParams = new URLSearchParams(window.location.search);
+const recoveryCode = urlParams.get('code');
+const isRecoveryUrl = recoveryCode !== null || window.location.hash.includes('type=recovery');
+
+if (isRecoveryUrl) {
+    sessionStorage.setItem('is_recovery', 'true');
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+// Run checkUser first (normal auth state check)
 checkUser();
-handlePasswordRecovery();
+
+// Then: if this was a recovery, override and show reset UI
+(async () => {
+    if (sessionStorage.getItem('is_recovery') === 'true') {
+        sessionStorage.removeItem('is_recovery');
+        
+        // If code wasn't auto-exchanged (phone), exchange it now
+        if (recoveryCode) {
+            const { error } = await db.auth.exchangeCodeForSession(recoveryCode);
+            if (error) {
+                alert("This reset link is invalid or has expired.");
+                return;
+            }
+        }
+        
+        // Force show reset UI (hide tracker, show reset form)
+        const authOverlay = document.getElementById('auth-overlay');
+        const mainApp = document.querySelector('.container');
+        const header = document.getElementById('account-header');
+        
+        authOverlay.classList.remove('hidden');
+        mainApp.style.display = 'none';
+        if (header) header.style.display = 'none';
+        
+        showResetPasswordUI();
+    }
+})();
 
 // 1. Memory Buckets
 let correctCount = 0;
@@ -246,7 +284,7 @@ function redrawPills() {
         pill.innerHTML = `
             <div class="pill-content">
                 <div class="pill-info">
-                    <strong class="pill-client">${session.client_name}</strong>: 
+                    <strong class="pill-client">${escapeHtml(session.client_name)}</strong>: 
                     <strong class="pill-sound">${session.sound}</strong>
                     
                     <div class="pill-details">
