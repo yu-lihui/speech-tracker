@@ -54,6 +54,8 @@ async function handlePasswordRecovery() {
 
 // Separate the UI toggle into its own function
 function showResetPasswordUI() {
+    document.getElementById('login-password-wrapper').classList.add('hidden');
+    
     // Hide login elements
     document.getElementById('auth-email').classList.add('hidden');
     document.getElementById('auth-password').classList.add('hidden');
@@ -115,6 +117,8 @@ document.getElementById('login-btn').addEventListener('click', async () => {
 });
 
 document.getElementById('signup-toggle').addEventListener('click', () => {
+    document.getElementById('login-password-wrapper').classList.add('hidden');
+    
     document.getElementById('signup-view').classList.remove('hidden');
     document.getElementById('auth-email').classList.add('hidden');
     document.getElementById('auth-password').classList.add('hidden');
@@ -127,6 +131,7 @@ document.getElementById('signup-toggle').addEventListener('click', () => {
 
 document.getElementById('go-to-login').addEventListener('click', () => {
     document.getElementById('signup-view').classList.add('hidden');
+    document.getElementById('login-password-wrapper').classList.remove('hidden');
     document.getElementById('auth-email').classList.remove('hidden');
     document.getElementById('auth-password').classList.remove('hidden');
     document.getElementById('login-btn').classList.remove('hidden');
