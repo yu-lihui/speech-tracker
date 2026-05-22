@@ -457,11 +457,19 @@ document.getElementById('forgot-password-link').addEventListener('click', async 
 
 document.getElementById('update-password-btn').addEventListener('click', async () => {
     const newPassword = document.getElementById('new-password').value;
+    
     if (newPassword.length < 6) {
         alert("Password must be at least 6 characters.");
         return;
     }
+    
     const { error } = await db.auth.updateUser({ password: newPassword });
-    if (error) alert("Failed: " + error.message);
-    else { alert("Password updated!"); window.location.hash = ''; window.location.reload(); }
+    
+    if (error) {
+        alert("Failed to update password: " + error.message);
+    } else {
+        alert("Password updated! Please log in with your new password.");
+        // Clear URL and go back to login
+        window.location.href = window.location.origin;
+    }
 });
