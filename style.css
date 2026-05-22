@@ -100,7 +100,7 @@ body {
 }
 
 /* Base style for all Auth Buttons */
-.auth-btn, .google-btn {
+.auth-btn, .google-btn, .email-otp-btn {
     width: 80%;
     max-width: 350px;
     height: 50px;
@@ -125,7 +125,7 @@ body {
     opacity: 0.5;
 }
     
-.auth-btn, .google-btn {
+.auth-btn, .google-btn, .email-otp-btn {
     width: 80%;
     max-width: 350px;
     height: 50px !important;     /* Forces exact height */
@@ -179,20 +179,9 @@ body {
 }
 
 .email-otp-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #3c4043;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+   background-color: white;
+   color: #457b9d;
+   border: 1px solid #457b9d !important;
 }
 
 .email-otp-btn:hover {
