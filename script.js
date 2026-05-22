@@ -17,7 +17,7 @@ async function checkUser() {
         authOverlay.classList.add('hidden');
         mainApp.style.display = 'block'; // Show tracker
         if (header) header.style.display = 'flex';
-        document.getElementById('user-display-email').textContent = user.email; // ADD THIS
+        document.getElementById('user-display-email').textContent = user.email;
         loadHistory();
     } else {
         // USER LOGGED OUT
@@ -27,32 +27,6 @@ async function checkUser() {
     }
 }
 
-async function handlePasswordRecovery() {
-    // --- FLOW 1: PKCE (newer) - URL has ?code=xxx ---
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    
-    if (code) {
-        // Exchange the code for a session first
-        const { error } = await db.auth.exchangeCodeForSession(code);
-        if (error) {
-            console.error('Code exchange error:', error);
-            alert("Invalid or expired reset link. Please try again.");
-            return;
-        }
-        
-        // Now show the reset UI
-        showResetPasswordUI();
-        return;
-    }
-    
-    // --- FLOW 2: Implicit (older) - hash has #type=recovery ---
-    if (window.location.hash.includes("type=recovery")) {
-        showResetPasswordUI();
-    }
-}
-
-// Separate the UI toggle into its own function
 function showResetPasswordUI() {
     document.getElementById('login-password-wrapper').classList.add('hidden');
     
@@ -64,7 +38,7 @@ function showResetPasswordUI() {
     document.querySelector('.auth-divider').classList.add('hidden');
     document.querySelector('.signup-text').classList.add('hidden');
     document.getElementById('forgot-password-link').classList.add('hidden');
-    document.getElementById('signup-view').classList.add('hidden'); // ensure signup hidden too
+    document.getElementById('signup-view').classList.add('hidden');
     
     // Show reset section
     document.querySelector('.logo-container').classList.remove('hidden');
@@ -106,9 +80,8 @@ document.getElementById('login-btn').addEventListener('click', async () => {
         // Success!
         document.getElementById('auth-overlay').classList.add('hidden');
         document.querySelector('.container').style.display = 'block';
-        document.getElementById('account-header').style.display = 'flex'; // Show the header!
+        document.getElementById('account-header').style.display = 'flex';
 
-        // NEW: Scroll to top immediately after login
         window.scrollTo(0, 0);
         
         const { data: { user } } = await db.auth.getUser();
@@ -152,40 +125,54 @@ if (isRecoveryUrl) {
     window.history.replaceState({}, document.title, window.location.pathname);
 }
 
-// Run checkUser first (normal auth state check)
-checkUser();
-
-// Then: if this was a recovery, override and show reset UI
+// Run auth check + recovery in sequence
 (async () => {
+    // Step 1: Normal auth check (shows tracker if logged in via Google, etc.)
+    await checkUser();
+    
+    // Step 2: Handle password recovery ONLY if not already logged in
     if (sessionStorage.getItem('is_recovery') === 'true') {
         sessionStorage.removeItem('is_recovery');
         
-        // If code wasn't auto-exchanged (phone), exchange it now
-        if (recoveryCode) {
-            const { error } = await db.auth.exchangeCodeForSession(recoveryCode);
+        // Check if user is already logged in (Google OAuth, etc.)
+        const { data: { user } } = await db.auth.getUser();
+        
+        if (!user && recoveryCode) {
+            // PKCE flow: exchange code and set session
+            const { data, error } = await db.auth.exchangeCodeForSession(recoveryCode);
+            
             if (error) {
                 alert("This reset link is invalid or has expired.");
                 return;
             }
-
-        if (data?.session) {
-            await db.auth.setSession({
-                access_token: data.session.access_token,
-                refresh_token: data.session.refresh_token
-            });
+            
+            // Explicitly persist session
+            if (data?.session) {
+                await db.auth.setSession({
+                    access_token: data.session.access_token,
+                    refresh_token: data.session.refresh_token
+                });
+            }
+            
+            // Show reset UI
+            const authOverlay = document.getElementById('auth-overlay');
+            const mainApp = document.querySelector('.container');
+            const header = document.getElementById('account-header');
+            
+            authOverlay.classList.remove('hidden');
+            mainApp.style.display = 'none';
+            if (header) header.style.display = 'none';
+            
+            showResetPasswordUI();
         }
     }
-        
-        // Force show reset UI (hide tracker, show reset form)
-        const authOverlay = document.getElementById('auth-overlay');
-        const mainApp = document.querySelector('.container');
-        const header = document.getElementById('account-header');
-        
-        authOverlay.classList.remove('hidden');
-        mainApp.style.display = 'none';
-        if (header) header.style.display = 'none';
-        
-        showResetPasswordUI();
+    
+    // Older implicit flow (hash-based)
+    if (window.location.hash.includes('type=recovery')) {
+        const { data: { user } } = await db.auth.getUser();
+        if (!user) {
+            showResetPasswordUI();
+        }
     }
 })();
 
@@ -223,7 +210,7 @@ async function loadHistory() {
     const { data, error } = await db
         .from('sessions')
         .select('*')
-        .eq('user_id', user.id) // <--- ONLY LOAD MY DATA
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -266,6 +253,7 @@ async function deleteFromCloud(id) {
         loadHistory(); // Reload from cloud to restore the pill if delete failed
     }
 }
+
 // 4. CORE APP LOGIC
 
 function updateAccuracy() {
@@ -285,23 +273,30 @@ function resetAll() {
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function redrawPills() {
     historyLog.innerHTML = "";
     allSessions.forEach((session) => {
         const pill = document.createElement('div');
-        pill.classList.add('history-pill'); // CSS file handles the border and padding now!
+        pill.classList.add('history-pill');
 
         const dateObj = new Date(session.created_at);
-        const displayDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        const displayDate = session.created_at
+            ? dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+            : 'No date';
 
         pill.innerHTML = `
             <div class="pill-content">
                 <div class="pill-info">
                     <strong class="pill-client">${escapeHtml(session.client_name)}</strong>: 
-                    <strong class="pill-sound">${session.sound}</strong>
+                    <strong class="pill-sound">${escapeHtml(session.sound)}</strong>
                     
                     <div class="pill-details">
-                        <span>${session.level}</span> | Cues: <span>${session.prompt}</span>
+                        <span>${escapeHtml(session.level)}</span> | Cues: <span>${escapeHtml(session.prompt)}</span>
                     </div>
                     
                     <div class="pill-date">${displayDate}</div>
@@ -325,11 +320,13 @@ function redrawPills() {
 function displayClientHistory(clientName) {
     const container = document.getElementById('all-goals-container');
     const messageArea = document.getElementById('client-history-results');
-    const clientData = allSessions.filter(h => h.client_name.toLowerCase() === clientName.toLowerCase());
+    const clientData = allSessions.filter(h => 
+        (h.client_name || '').toLowerCase() === (clientName || '').toLowerCase()
+    );
 
     container.innerHTML = '';
     if (clientData.length === 0) {
-        messageArea.innerHTML = `<p style="text-align:center; color:#95a5a6;">No sessions found for "${clientName}".</p>`;
+        messageArea.innerHTML = `<p style="text-align:center; color:#95a5a6;">No sessions found for "${escapeHtml(clientName)}".</p>`;
         return;
     } 
     messageArea.innerHTML = "";
@@ -340,43 +337,38 @@ function displayClientHistory(clientName) {
         groups[entry.sound].push(entry);
     });
 
-   for (const sound in groups) {
-    const card = document.createElement('div');
-    card.className = 'goal-card'; // Controlled by CSS now
+    for (const sound in groups) {
+        const card = document.createElement('div');
+        card.className = 'goal-card';
 
-    let rows = groups[sound]
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .map(entry => `
-            <tr class="goal-row">
-                <td class="cell-level">${entry.level}</td>
-                <td class="cell-cues">${entry.prompt || 'Indpt'}</td>
-                <td class="cell-acc" style="color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
-                    ${entry.accuracy}%
-                </td>
-                <td class="cell-date">${new Date(entry.created_at).toLocaleDateString('en-GB')}</td>
-            </tr>
-        `).join('');
-
-    card.innerHTML = `
-        <div class="goal-header">${sound}</div>
-        <table class="goal-table">
-            <thead>
-                <tr>
-                    <th>Level</th>
-                    <th>Cues</th>
-                    <th>Acc%</th>
-                    <th>Date</th>
+        let rows = groups[sound]
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .map(entry => `
+                <tr class="goal-row">
+                    <td class="cell-level">${escapeHtml(entry.level)}</td>
+                    <td class="cell-cues">${escapeHtml(entry.prompt || 'Indpt')}</td>
+                    <td class="cell-acc" style="color:${entry.accuracy >= 80 ? '#2a9d8f' : '#e76f51'}">
+                        ${entry.accuracy}%
+                    </td>
+                    <td class="cell-date">${entry.created_at ? new Date(entry.created_at).toLocaleDateString('en-GB') : 'No date'}</td>
                 </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-        </table>`;
-    container.appendChild(card);
-}
-}
+            `).join('');
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        card.innerHTML = `
+            <div class="goal-header">${escapeHtml(sound)}</div>
+            <table class="goal-table">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Cues</th>
+                        <th>Acc%</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>`;
+        container.appendChild(card);
+    }
 }
 
 // 5. EVENT LISTENERS
@@ -398,7 +390,6 @@ saveBtn.addEventListener('click', async () => {
     const soundVal = soundInput.value || "General";
     const positionVal = document.getElementById('speech-position').value || "";
 
-    // CLEANED UP: Removes the extra "concepts" logic and fixed the syntax error
     const combinedSound = `${soundVal} ${positionVal}`.trim();
 
     const newSession = {
@@ -432,7 +423,6 @@ navTracker.addEventListener('click', () => {
     trackerView.classList.remove('hidden');
     dashboardView.classList.add('hidden');
 
-    // PRIVACY WIPE: Clear history when leaving the dashboard
     document.getElementById('all-goals-container').innerHTML = "";
     document.getElementById('search-client').value = "";
     document.getElementById('client-history-results').innerHTML = `<p style="text-align:center; color:#95a5a6;">Search for a client to see progress history.</p>`;
@@ -447,12 +437,9 @@ navDashboard.addEventListener('click', () => {
 
 // --- CUE CHIPS LOGIC ---
 document.getElementById('prompt-chips').addEventListener('click', (e) => {
-    // Check if what was clicked is actually a chip button
     if (e.target.classList.contains('chip')) {
-        // Toggle the 'selected' class (changes color)
         e.target.classList.toggle('selected');
         
-        // Optional: If 'Independent' is selected, deselect others
         if (e.target.getAttribute('data-value') === 'Indpt' && e.target.classList.contains('selected')) {
             const allChips = document.querySelectorAll('.chip');
             allChips.forEach(chip => {
@@ -498,8 +485,7 @@ document.getElementById('forgot-password-link').addEventListener('click', async 
     }
 
     const { error } = await db.auth.resetPasswordForEmail(email, {
-        // Explicitly set the Vercel URL here to match Supabase settings
-        redirectTo: 'https://speechtracker.vercel.app', 
+        redirectTo: window.location.origin,
     });
 
     if (error) alert("Error: " + error.message);
@@ -532,7 +518,7 @@ document.getElementById('update-password-btn').addEventListener('click', async (
     }
 });
 
-    // Password visibility toggle
+// Password visibility toggle
 document.querySelectorAll('.toggle-password').forEach(btn => {
     btn.addEventListener('click', () => {
         const inputId = btn.getAttribute('data-target');
