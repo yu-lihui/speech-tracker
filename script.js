@@ -21,6 +21,74 @@ const supabaseKey = 'sb_publishable_AkQZZKS2b5Ejbo5L5wL38Q_K2AL_JIW';
 
 const db = createClient(supabaseUrl, supabaseKey);
 
+const emailStep = document.querySelector('#email-step');
+const passwordStep = document.querySelector('#password-step');
+const otpStep = document.querySelector('#otp-step');
+
+const continueEmailBtn = document.querySelector('#continue-email-btn');
+const sendOtpBtn = document.querySelector('#send-otp-btn');
+const verifyOtpBtn = document.querySelector('#verify-otp-btn');
+const resendOtpBtn = document.querySelector('#resend-otp-btn');
+
+const passwordBackBtn = document.querySelector('#password-back-btn');
+const otpBackBtn = document.querySelector('#otp-back-btn');
+
+const passwordEmailDisplay = document.querySelector('#password-email-display');
+const otpEmailDisplay = document.querySelector('#otp-email-display');
+const otpBoxes = document.querySelectorAll('.otp-box');
+
+function getLoginEmail() {
+  return document.getElementById('auth-email').value.trim();
+}
+
+function showEmailStep() {
+  emailStep.classList.remove('hidden');
+  passwordStep.classList.add('hidden');
+  otpStep.classList.add('hidden');
+
+  document.getElementById('signup-view').classList.add('hidden');
+  document.getElementById('reset-password-section').classList.add('hidden');
+}
+
+function showPasswordStep(email) {
+  emailStep.classList.add('hidden');
+  passwordStep.classList.remove('hidden');
+  otpStep.classList.add('hidden');
+
+  passwordEmailDisplay.textContent = email;
+  document.getElementById('auth-password').focus();
+}
+
+function showOtpStep(email) {
+  emailStep.classList.add('hidden');
+  passwordStep.classList.add('hidden');
+  otpStep.classList.remove('hidden');
+
+  otpEmailDisplay.textContent = email;
+
+  otpBoxes.forEach(box => {
+    box.value = '';
+  });
+
+  otpBoxes[0].focus();
+}
+
+async function sendOtpCode(email) {
+  const { error } = await db.auth.signInWithOtp({
+    email: email,
+    options: {
+      shouldCreateUser: true
+    }
+  });
+
+  if (error) {
+    alert("Could not send code: " + error.message);
+    return false;
+  }
+
+  return true;
+}
+
 function showLoginUI() {
   document.getElementById('auth-overlay').classList.remove('hidden');
 
@@ -57,22 +125,18 @@ function showResetPasswordUI() {
   const header = document.getElementById('account-header');
 
   authOverlay.classList.remove('hidden');
+
   mainApp.classList.add('hidden');
   mainApp.style.display = 'none';
+
   header.classList.add('hidden');
   header.style.display = 'none';
 
-  document.getElementById('login-password-wrapper').classList.add('hidden');
-  document.getElementById('auth-email').classList.add('hidden');
-  document.getElementById('auth-password').classList.add('hidden');
-  document.getElementById('login-btn').classList.add('hidden');
-  document.getElementById('google-login-btn').classList.add('hidden');
-  document.querySelector('.auth-divider').classList.add('hidden');
-  document.querySelector('.signup-text').classList.add('hidden');
-  document.getElementById('forgot-password-link').classList.add('hidden');
-  document.getElementById('signup-view').classList.add('hidden');
+  emailStep.classList.add('hidden');
+  passwordStep.classList.add('hidden');
+  otpStep.classList.add('hidden');
 
-  document.querySelector('#auth-overlay .logo-container').classList.remove('hidden');
+  document.getElementById('signup-view').classList.add('hidden');
   document.getElementById('reset-password-section').classList.remove('hidden');
 }
 
@@ -97,21 +161,6 @@ async function checkUser() {
         mainApp.style.display = 'none';
         if (header) header.style.display = 'none';
     }
-}
-
-function showResetPasswordUI() {
-    document.getElementById('login-password-wrapper').classList.add('hidden');
-    document.getElementById('auth-email').classList.add('hidden');
-    document.getElementById('auth-password').classList.add('hidden');
-    document.getElementById('login-btn').classList.add('hidden');
-    document.getElementById('google-login-btn').classList.add('hidden');
-    document.querySelector('.auth-divider').classList.add('hidden');
-    document.querySelector('.signup-text').classList.add('hidden');
-    document.getElementById('forgot-password-link').classList.add('hidden');
-    document.getElementById('signup-view').classList.add('hidden');
-    document.querySelector('.logo-container').classList.remove('hidden');
-    document.getElementById('reset-password-section').classList.remove('hidden');
-    document.getElementById('auth-overlay').classList.remove('hidden');
 }
 
 // ============================================================
@@ -339,58 +388,6 @@ otpBoxes.forEach((box, index) => {
   });
 });
 
-function getLoginEmail() {
-  return document.getElementById('auth-email').value.trim();
-}
-
-function showEmailStep() {
-  emailStep.classList.remove('hidden');
-  passwordStep.classList.add('hidden');
-  otpStep.classList.add('hidden');
-
-  document.getElementById('signup-view').classList.add('hidden');
-  document.getElementById('reset-password-section').classList.add('hidden');
-}
-
-function showPasswordStep(email) {
-  emailStep.classList.add('hidden');
-  passwordStep.classList.remove('hidden');
-  otpStep.classList.add('hidden');
-
-  passwordEmailDisplay.textContent = email;
-  document.getElementById('auth-password').focus();
-}
-
-function showOtpStep(email) {
-  emailStep.classList.add('hidden');
-  passwordStep.classList.add('hidden');
-  otpStep.classList.remove('hidden');
-
-  otpEmailDisplay.textContent = email;
-
-  otpBoxes.forEach(box => {
-    box.value = '';
-  });
-
-  otpBoxes[0].focus();
-}
-
-async function sendOtpCode(email) {
-  const { error } = await db.auth.signInWithOtp({
-    email: email,
-    options: {
-      shouldCreateUser: true
-    }
-  });
-
-  if (error) {
-    alert("Could not send code: " + error.message);
-    return false;
-  }
-
-  return true;
-}
-
 // --- TOGGLES ---
 document.getElementById('signup-toggle').addEventListener('click', () => {
   emailStep.classList.add('hidden');
@@ -427,22 +424,6 @@ const navDashboard = document.querySelector('#nav-dashboard');
 const trackerView = document.querySelector('#tracker-view');
 const dashboardView = document.querySelector('#dashboard-view');
 const downloadCsvBtn = document.querySelector('#download-csv');
-
-const emailStep = document.querySelector('#email-step');
-const passwordStep = document.querySelector('#password-step');
-const otpStep = document.querySelector('#otp-step');
-
-const continueEmailBtn = document.querySelector('#continue-email-btn');
-const sendOtpBtn = document.querySelector('#send-otp-btn');
-const verifyOtpBtn = document.querySelector('#verify-otp-btn');
-const resendOtpBtn = document.querySelector('#resend-otp-btn');
-
-const passwordBackBtn = document.querySelector('#password-back-btn');
-const otpBackBtn = document.querySelector('#otp-back-btn');
-
-const passwordEmailDisplay = document.querySelector('#password-email-display');
-const otpEmailDisplay = document.querySelector('#otp-email-display');
-const otpBoxes = document.querySelectorAll('.otp-box');
 
 // --- CLOUD FUNCTIONS ---
 async function loadHistory() {
@@ -831,62 +812,6 @@ downloadCsvBtn.addEventListener('click', () => {
 
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-});
-
-sendOtpBtn.addEventListener('click', async () => {
-  const email = document.getElementById('auth-email').value.trim();
-
-  if (!email) {
-    alert("Please enter your email address first.");
-    document.getElementById('auth-email').focus();
-    return;
-  }
-
-  const { error } = await db.auth.signInWithOtp({
-    email: email,
-    options: {
-      shouldCreateUser: true
-    }
-  });
-
-  if (error) {
-    alert("Could not send code: " + error.message);
-    return;
-  }
-
-  alert("A one-time code has been sent to your email.");
-  otpSection.classList.remove('hidden');
-  otpCodeInput.focus();
-});
-
-verifyOtpBtn.addEventListener('click', async () => {
-  const email = document.getElementById('auth-email').value.trim();
-  const token = otpCodeInput.value.trim();
-
-  if (!email) {
-    alert("Please enter your email address.");
-    document.getElementById('auth-email').focus();
-    return;
-  }
-
-  if (!token) {
-    alert("Please enter the code from your email.");
-    otpCodeInput.focus();
-    return;
-  }
-
-  const { data, error } = await db.auth.verifyOtp({
-    email: email,
-    token: token,
-    type: 'email'
-  });
-
-  if (error) {
-    alert("Invalid or expired code: " + error.message);
-    return;
-  }
-
-  showAppUI(data.user);
 });
 
 // Password visibility toggle
