@@ -103,18 +103,6 @@ body {
   position: relative;
 }
 
-.auth-back-btn {
-  position: absolute;
-  top: -10px;
-  left: 0;
-  border: none;
-  background: transparent;
-  color: #333;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 6px;
-}
-
 .login-email-label {
   font-size: 13px;
   color: #6b7280;
@@ -971,26 +959,42 @@ h3 {
 }
 
 /* Back button fixed at top left, above logo */
+/* Auth back button */
 .auth-back-btn {
   position: fixed !important;
   top: 22px !important;
-  left: 22px !important;
+  left: 50% !important;
+  transform: translateX(-170px) !important;
+
   z-index: 30000;
-  color: #457b9d !important;
-  background: #f7fcfc;
   width: 42px;
   height: 42px;
-  border-radius: 50%;
-  font-size: 26px;
-  line-height: 1;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 10px !important;
+
+  padding: 0 0 4px 0 !important;
+  line-height: 1;
+
+  color: #457b9d !important;
+  background: #f7fcfc;
+  border: transparent;
+  border-radius: 50%;
+
+  font-size: 26px;
+  cursor: pointer;
 }
 
 .auth-back-btn:hover {
   background: #eef8fb;
+}
+
+@media (max-width: 420px) {
+  .auth-back-btn {
+    left: 20px !important;
+    transform: none !important;
+  }
 }
 
 /* OTP page centered */
