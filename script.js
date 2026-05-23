@@ -31,6 +31,8 @@ function showLoginUI() {
   const header = document.getElementById('account-header');
   header.classList.add('hidden');
   header.style.display = 'none';
+    
+  showEmailStep();
 }
 
 function showAppUI(user) {
@@ -180,10 +182,25 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
 
 // --- LOGIN ---
 document.getElementById('login-btn').addEventListener('click', async () => {
-  const email = document.getElementById('auth-email').value;
+  const email = getLoginEmail();
   const password = document.getElementById('auth-password').value;
 
-  const { error } = await db.auth.signInWithPassword({ email, password });
+  if (!email) {
+    alert("Please enter your email address.");
+    showEmailStep();
+    return;
+  }
+
+  if (!password) {
+    alert("Please enter your password.");
+    document.getElementById('auth-password').focus();
+    return;
+  }
+
+  const { error } = await db.auth.signInWithPassword({
+    email,
+    password
+  });
 
   if (error) {
     alert("Login failed: " + error.message);
@@ -196,29 +213,196 @@ document.getElementById('login-btn').addEventListener('click', async () => {
   }
 });
 
+continueEmailBtn.addEventListener('click', () => {
+  const email = getLoginEmail();
+
+  if (!email) {
+    alert("Please enter your email address.");
+    document.getElementById('auth-email').focus();
+    return;
+  }
+
+  showPasswordStep(email);
+});
+
+sendOtpBtn.addEventListener('click', async () => {
+  const email = getLoginEmail();
+
+  if (!email) {
+    alert("Please enter your email address.");
+    showEmailStep();
+    return;
+  }
+
+  const sent = await sendOtpCode(email);
+
+  if (sent) {
+    showOtpStep(email);
+  }
+});
+
+verifyOtpBtn.addEventListener('click', async () => {
+  const email = getLoginEmail();
+  const token = [...otpBoxes].map(box => box.value).join('');
+
+  if (!email) {
+    alert("Please enter your email address again.");
+    showEmailStep();
+    return;
+  }
+
+  if (token.length !== 8) {
+    alert("Please enter the full 8-digit code.");
+    otpBoxes[0].focus();
+    return;
+  }
+
+  const { data, error } = await db.auth.verifyOtp({
+    email: email,
+    token: token,
+    type: 'email'
+  });
+
+  if (error) {
+    alert("Invalid or expired code: " + error.message);
+    return;
+  }
+
+  showAppUI(data.user);
+});
+
+resendOtpBtn.addEventListener('click', async () => {
+  const email = getLoginEmail();
+
+  if (!email) {
+    alert("Please enter your email address again.");
+    showEmailStep();
+    return;
+  }
+
+  const sent = await sendOtpCode(email);
+
+  if (sent) {
+    alert("A new code has been sent to your email.");
+    showOtpStep(email);
+  }
+});
+
+passwordBackBtn.addEventListener('click', () => {
+  showEmailStep();
+});
+
+otpBackBtn.addEventListener('click', () => {
+  const email = getLoginEmail();
+
+  if (email) {
+    showPasswordStep(email);
+  } else {
+    showEmailStep();
+  }
+});
+
+otpBoxes.forEach((box, index) => {
+  box.addEventListener('input', () => {
+    box.value = box.value.replace(/\D/g, '');
+
+    if (box.value && index < otpBoxes.length - 1) {
+      otpBoxes[index + 1].focus();
+    }
+  });
+
+  box.addEventListener('keydown', (event) => {
+    if (event.key === 'Backspace' && !box.value && index > 0) {
+      otpBoxes[index - 1].focus();
+    }
+  });
+
+  box.addEventListener('paste', (event) => {
+    event.preventDefault();
+
+    const pastedCode = event.clipboardData
+      .getData('text')
+      .replace(/\D/g, '')
+      .slice(0, 8);
+
+    otpBoxes.forEach((otpBox, otpIndex) => {
+      otpBox.value = pastedCode[otpIndex] || '';
+    });
+
+    const nextEmptyBox = [...otpBoxes].find(otpBox => !otpBox.value);
+
+    if (nextEmptyBox) {
+      nextEmptyBox.focus();
+    } else {
+      otpBoxes[otpBoxes.length - 1].focus();
+    }
+  });
+});
+
+function getLoginEmail() {
+  return document.getElementById('auth-email').value.trim();
+}
+
+function showEmailStep() {
+  emailStep.classList.remove('hidden');
+  passwordStep.classList.add('hidden');
+  otpStep.classList.add('hidden');
+
+  document.getElementById('signup-view').classList.add('hidden');
+  document.getElementById('reset-password-section').classList.add('hidden');
+}
+
+function showPasswordStep(email) {
+  emailStep.classList.add('hidden');
+  passwordStep.classList.remove('hidden');
+  otpStep.classList.add('hidden');
+
+  passwordEmailDisplay.textContent = email;
+  document.getElementById('auth-password').focus();
+}
+
+function showOtpStep(email) {
+  emailStep.classList.add('hidden');
+  passwordStep.classList.add('hidden');
+  otpStep.classList.remove('hidden');
+
+  otpEmailDisplay.textContent = email;
+
+  otpBoxes.forEach(box => {
+    box.value = '';
+  });
+
+  otpBoxes[0].focus();
+}
+
+async function sendOtpCode(email) {
+  const { error } = await db.auth.signInWithOtp({
+    email: email,
+    options: {
+      shouldCreateUser: true
+    }
+  });
+
+  if (error) {
+    alert("Could not send code: " + error.message);
+    return false;
+  }
+
+  return true;
+}
+
 // --- TOGGLES ---
 document.getElementById('signup-toggle').addEventListener('click', () => {
-    document.getElementById('login-password-wrapper').classList.add('hidden');
-    document.getElementById('signup-view').classList.remove('hidden');
-    document.getElementById('auth-email').classList.add('hidden');
-    document.getElementById('auth-password').classList.add('hidden');
-    document.getElementById('login-btn').classList.add('hidden');
-    document.getElementById('forgot-password-link').classList.add('hidden');
-    document.querySelector('.signup-text').classList.add('hidden');
-    document.querySelector('.auth-divider').classList.add('hidden');
-    document.getElementById('google-login-btn').classList.add('hidden');
+  emailStep.classList.add('hidden');
+  passwordStep.classList.add('hidden');
+  otpStep.classList.add('hidden');
+
+  document.getElementById('signup-view').classList.remove('hidden');
 });
 
 document.getElementById('go-to-login').addEventListener('click', () => {
-    document.getElementById('signup-view').classList.add('hidden');
-    document.getElementById('login-password-wrapper').classList.remove('hidden');
-    document.getElementById('auth-email').classList.remove('hidden');
-    document.getElementById('auth-password').classList.remove('hidden');
-    document.getElementById('login-btn').classList.remove('hidden');
-    document.getElementById('forgot-password-link').classList.remove('hidden');
-    document.querySelector('.signup-text').classList.remove('hidden');
-    document.querySelector('.auth-divider').classList.remove('hidden');
-    document.getElementById('google-login-btn').classList.remove('hidden');
+  document.getElementById('signup-view').classList.add('hidden');
+  showEmailStep();
 });
 
 // --- APP STATE ---
@@ -243,10 +427,22 @@ const navDashboard = document.querySelector('#nav-dashboard');
 const trackerView = document.querySelector('#tracker-view');
 const dashboardView = document.querySelector('#dashboard-view');
 const downloadCsvBtn = document.querySelector('#download-csv');
+
+const emailStep = document.querySelector('#email-step');
+const passwordStep = document.querySelector('#password-step');
+const otpStep = document.querySelector('#otp-step');
+
+const continueEmailBtn = document.querySelector('#continue-email-btn');
 const sendOtpBtn = document.querySelector('#send-otp-btn');
-const otpSection = document.querySelector('#otp-section');
-const otpCodeInput = document.querySelector('#otp-code');
 const verifyOtpBtn = document.querySelector('#verify-otp-btn');
+const resendOtpBtn = document.querySelector('#resend-otp-btn');
+
+const passwordBackBtn = document.querySelector('#password-back-btn');
+const otpBackBtn = document.querySelector('#otp-back-btn');
+
+const passwordEmailDisplay = document.querySelector('#password-email-display');
+const otpEmailDisplay = document.querySelector('#otp-email-display');
+const otpBoxes = document.querySelectorAll('.otp-box');
 
 // --- CLOUD FUNCTIONS ---
 async function loadHistory() {
