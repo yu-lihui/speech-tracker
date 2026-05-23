@@ -1186,3 +1186,20 @@ h3 {
 #header-logout-btn:hover {
     background-color: #cf6e4d
 }
+
+.legal-links {
+  margin-top: 18px;
+  font-size: 12px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.legal-links a {
+  color: #457b9d;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.legal-links a:hover {
+  text-decoration: underline;
+}
