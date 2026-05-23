@@ -267,8 +267,11 @@ body {
     color: #457b9d; /* Your Light Blue */
     font-weight: bold;
     cursor: pointer;
-    text-decoration: underline;
     margin-left: 5px;
+}
+
+#signup-toggle:hover {
+    text-decoration: underline;
 }
 
 #signup-toggle:active {
@@ -336,13 +339,17 @@ body {
 }
 
 /* Forgot Password - Clinical Mauve/Salmon accent */
-#forgot-password-link {
+#forgot-password-link, #resend-otp-btn {
     color: #E0A08B;
     font-size: 14px;
     margin-top: 15px;
     cursor: pointer;
-    text-decoration: underline;
     font-weight: 500;
+}
+
+.forgot-password-link:hover,
+#resend-otp-btn:hover {
+  text-decoration: underline;
 }
 
 /* --- RESET PASSWORD SECTION --- */
@@ -860,6 +867,182 @@ h3 {
 }
 .hidden { display: none !important; }
 
+/* ============================= */
+/* AUTH PAGE POLISH FIXES */
+/* ============================= */
+
+#auth-overlay {
+  align-items: center;
+  padding: 32px 20px 40px;
+  box-sizing: border-box;
+}
+
+#auth-overlay .logo-container {
+  margin-top: 40px;
+  margin-bottom: 24px;
+}
+
+/* Make every auth page same width and centered */
+.auth-step {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Bigger, more consistent login inputs/buttons */
+#auth-overlay .auth-input,
+#auth-overlay .auth-btn,
+#auth-overlay .google-btn,
+#auth-overlay .email-otp-btn {
+  width: 100% !important;
+  max-width: 360px !important;
+  height: 54px !important;
+  min-height: 54px !important;
+  font-size: 16px;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+/* Make buttons feel less tiny */
+#auth-overlay .auth-btn,
+#auth-overlay .google-btn,
+#auth-overlay .email-otp-btn {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Center the Google/email icon nicely */
+.google-btn,
+.email-otp-btn {
+  gap: 10px;
+}
+
+/* OR separator with lines */
+.auth-divider {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px 0 18px;
+  color: #457b9d;
+  opacity: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #b8d4e3;
+}
+
+.auth-divider span {
+  color: #457b9d;
+  white-space: nowrap;
+}
+
+/* Logging in as text - same blue */
+.login-email-label,
+.login-email-display,
+.otp-message,
+.otp-email {
+  color: #457b9d !important;
+}
+
+.login-email-label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.login-email-display,
+.otp-email {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* Back button fixed at top left, above logo */
+.auth-back-btn {
+  position: fixed !important;
+  top: 22px !important;
+  left: 22px !important;
+  z-index: 30000;
+  color: #457b9d !important;
+  background: #f7fcfc;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px !important;
+}
+
+.auth-back-btn:hover {
+  background: #eef8fb;
+}
+
+/* OTP page centered */
+#otp-step {
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Prevent OTP boxes from filling whole screen */
+.otp-grid {
+  width: 100%;
+  max-width: 320px;
+  display: grid;
+  grid-template-columns: repeat(8, 34px);
+  justify-content: center;
+  gap: 6px;
+  margin: 18px auto 20px;
+}
+
+.otp-box {
+  width: 34px !important;
+  height: 46px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #457b9d;
+  border: 1px solid #b8d4e3;
+  border-radius: 10px;
+  background: #f7fcfc;
+  box-sizing: border-box;
+}
+
+.otp-box:focus {
+  border-color: #457b9d;
+  box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.15);
+}
+
+/* Small screens: keep OTP boxes neat */
+@media (max-width: 380px) {
+  .otp-grid {
+    grid-template-columns: repeat(8, 30px);
+    gap: 5px;
+    max-width: 280px;
+  }
+
+  .otp-box {
+    width: 30px !important;
+    height: 42px;
+    font-size: 18px;
+  }
+}
+
 /* 8. ACTION BUTTONS (CONSOLIDATED) */
 .actions {
     display: flex !important;
@@ -911,4 +1094,72 @@ h3 {
 
 .save-btn:hover {
     background-color: #6c8fad;
+}
+
+.toggle-password {
+  width: 34px !important;
+  height: 34px !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #457b9d;
+  opacity: 0.75;
+  font-size: 18px;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+/* Password eye / monkey alignment */
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field .auth-input {
+  padding-right: 52px !important;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 45%;
+  transform: translateY(-50%);
+  width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #457b9d;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+/* Make password field same width as other auth buttons */
+#auth-overlay .password-field {
+  width: 100% !important;
+  max-width: 360px !important;
+  position: relative;
+  box-sizing: border-box;
+}
+
+#auth-overlay .password-field .auth-input {
+  width: 100% !important;
+  max-width: 360px !important;
+  height: 54px !important;
+  min-height: 54px !important;
+  box-sizing: border-box;
+  padding-right: 52px !important;
 }
