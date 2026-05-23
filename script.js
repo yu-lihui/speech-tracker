@@ -816,16 +816,36 @@ downloadCsvBtn.addEventListener('click', () => {
 
 // Password visibility toggle
 document.querySelectorAll('.toggle-password').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const inputId = btn.getAttribute('data-target');
-        const input = document.getElementById(inputId);
-        
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = '👁';
-        } else {
-            input.type = 'password';
-            btn.textContent = '🙈';
-        }
-    });
+  const inputId = btn.getAttribute('data-target');
+  const input = document.getElementById(inputId);
+
+  // Password hidden by default
+  btn.textContent = '🙈';
+  btn.classList.add('password-hidden-icon');
+  btn.style.display = 'none';
+
+  input.addEventListener('input', () => {
+    if (input.value.trim().length > 0) {
+      btn.style.display = 'flex';
+    } else {
+      btn.style.display = 'none';
+      input.type = 'password';
+      btn.textContent = '🙈';
+      btn.classList.add('password-hidden-icon');
+    }
+  });
+
+  btn.addEventListener('click', () => {
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '👁';
+      btn.classList.remove('password-hidden-icon');
+    } else {
+      input.type = 'password';
+      btn.textContent = '🙈';
+      btn.classList.add('password-hidden-icon');
+    }
+
+    input.focus();
+  });
 });
