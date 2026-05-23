@@ -958,13 +958,14 @@ h3 {
   margin-bottom: 18px;
 }
 
-/* Back button fixed at top left, above logo */
-/* Auth back button */
+/* Auth back button - aligned with input boxes */
 .auth-back-btn {
   position: fixed !important;
   top: 22px !important;
-  left: 50% !important;
-  transform: translateX(-170px) !important;
+
+  /* Align with left edge of 360px auth container */
+  left: calc(50% - 180px) !important;
+  transform: none !important;
 
   z-index: 30000;
   width: 42px;
@@ -990,10 +991,10 @@ h3 {
   background: #eef8fb;
 }
 
+/* On small screens, follow page padding */
 @media (max-width: 420px) {
   .auth-back-btn {
     left: 20px !important;
-    transform: none !important;
   }
 }
 
